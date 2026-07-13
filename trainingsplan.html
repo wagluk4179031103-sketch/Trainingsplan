@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trainingsplan · EVO Bel & Main</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E5B3F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trainingsplan">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#17211B;
+    --paper:#FAFBF8;
+    --card:#FFFFFF;
+    --pine:#1E5B3F;
+    --pine-soft:#E4EEE8;
+    --sage:#8FA89A;
+    --line:#E2E7E2;
+    --steel:#3A4540;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    font-family:'Archivo',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding-bottom:48px;
+  }
+  header{
+    background:var(--pine);
+    color:#fff;
+    padding:26px 20px 20px;
+  }
+  header .eyebrow{
+    font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:#BCD4C6;margin-bottom:6px;
+  }
+  header h1{
+    font-family:'Archivo Black',sans-serif;
+    font-size:26px;line-height:1.1;letter-spacing:-.01em;
+  }
+  header .sub{font-size:13px;color:#CFE0D5;margin-top:8px;max-width:34ch}
+  nav{
+    position:sticky;top:0;z-index:10;
+    display:flex;gap:6px;overflow-x:auto;
+    background:var(--paper);
+    padding:12px 16px;
+    border-bottom:1px solid var(--line);
+    scrollbar-width:none;
+  }
+  nav::-webkit-scrollbar{display:none}
+  nav button{
+    flex:0 0 auto;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    padding:9px 15px;border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--card);color:var(--steel);
+    cursor:pointer;
+  }
+  nav button.active{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  nav button:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+  main{padding:18px 16px}
+  .day{display:none}
+  .day.visible{display:block}
+  .day-head{margin:4px 4px 14px}
+  .day-head h2{
+    font-family:'Archivo Black',sans-serif;font-size:20px;
+  }
+  .day-head p{font-size:13px;color:var(--steel);margin-top:4px}
+  .ex{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:10px;
+    display:grid;
+    grid-template-columns:52px 1fr auto;
+    gap:12px;
+    align-items:center;
+    transition:opacity .2s;
+  }
+  .ex.done{opacity:.45}
+  /* Hantelscheiben-Badge */
+  .plate{
+    width:52px;height:52px;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, var(--paper) 0 26%, var(--ink) 27% 100%);
+    border:3px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .plate span{
+    background:var(--ink);color:#fff;
+    font-family:'Archivo Black',sans-serif;font-size:11px;
+    padding:2px 5px;border-radius:4px;line-height:1;
+    letter-spacing:.02em;
+  }
+  .plate.cardio{
+    background:radial-gradient(circle at 50% 50%, var(--paper) 0 26%, var(--pine) 27% 100%);
+    border-color:var(--pine);
+  }
+  .plate.cardio span{background:var(--pine)}
+  .info h3{font-size:15px;font-weight:600;line-height:1.25}
+  .info .scheme{
+    font-size:13px;color:var(--steel);margin-top:3px;
+  }
+  .info .hint{
+    font-size:12px;color:var(--sage);margin-top:3px;line-height:1.35;
+  }
+  .actions{display:flex;flex-direction:column;gap:8px;align-items:center}
+  .vid{
+    display:flex;align-items:center;gap:5px;
+    background:var(--pine-soft);color:var(--pine);
+    font-size:12px;font-weight:600;
+    padding:8px 11px;border-radius:999px;
+    text-decoration:none;white-space:nowrap;
+  }
+  .vid svg{width:13px;height:13px;fill:currentColor}
+  .check{
+    width:26px;height:26px;border-radius:8px;
+    border:2px solid var(--line);
+    background:var(--card);
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    color:transparent;font-size:15px;
+  }
+  .ex.done .check{background:var(--pine);border-color:var(--pine);color:#fff}
+  .check:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+  .note{
+    background:var(--pine-soft);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:13px;line-height:1.5;color:var(--steel);
+    margin-top:14px;
+  }
+  .note strong{color:var(--pine)}
+  .reset{
+    display:block;margin:20px auto 0;
+    background:none;border:none;
+    font-family:'Archivo',sans-serif;font-size:12px;
+    color:var(--sage);text-decoration:underline;cursor:pointer;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">EVO Fitness Bel &amp; Main · Muskelaufbau + Fettverlust</div>
+  <h1>Ober-/Unterkörper-Split</h1>
+  <div class="sub">Jede Übung hat einen Video-Button mit Ausführungsvideos. Hak ab, was erledigt ist.</div>
+</header>
+
+<nav id="tabs"></nav>
+<main id="content"></main>
+
+<script>
+const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " Ausführung Technik");
+
+const plan = [
+  {
+    id:"mo", tab:"Mo · OK A", title:"Montag früh — Oberkörper A",
+    desc:"Drücken + Ziehen im Gleichgewicht. Pausen 90–120 s bei den ersten beiden, sonst 60–90 s.",
+    ex:[
+      {n:"Brustpresse Maschine", s:"4 × 8–10", w:"60–65", q:"Brustpresse Maschine", h:"Schulterblätter zurück, nicht ganz aussperren."},
+      {n:"Latzug zur Brust", s:"4 × 8–10", w:"60", q:"Latzug breiter Griff", h:"Zur oberen Brust ziehen, Ellbogen nach unten."},
+      {n:"Schulterdrücken Maschine", s:"3 × 10", w:"45", q:"Schulterdrücken Maschine", h:"Unterarme senkrecht, kein Hohlkreuz."},
+      {n:"Rudermaschine", s:"3 × 10–12", w:"60", q:"Rudern Maschine Brustauflage", h:"Schulterblätter aktiv zusammenziehen."},
+      {n:"Seitheben am Kabel", s:"3 × 12–15", w:"9,5", q:"Seitheben Kabelzug einarmig", h:"Langsam absenken — die Negative zählt."},
+      {n:"Trizeps Pushdown", s:"3 × 12", w:"25", q:"Trizepsdrücken Kabelzug", h:"Ellbogen bleiben am Körper fixiert."}
+    ]
+  },
+  {
+    id:"di", tab:"Di · UK A", title:"Dienstag — Unterkörper A",
+    desc:"Schwerer Beintag. Beinpresse zuerst, solange du frisch bist.",
+    ex:[
+      {n:"Beinpresse", s:"4 × 8–10", w:"110", q:"Beinpresse", h:"Tief runter, Knie in Richtung Zehenspitzen."},
+      {n:"Beinbeuger sitzend", s:"3 × 10–12", w:"45", q:"Beinbeuger sitzend Maschine", h:"Oben kontrolliert, unten kurz halten."},
+      {n:"Ausfallschritte mit Kurzhanteln", s:"3 × 10 / Bein", w:"KH", q:"Ausfallschritte Kurzhanteln", h:"Großer Schritt, Oberkörper leicht vorgeneigt."},
+      {n:"Wadenheben", s:"3 × 12–15", w:"140", q:"Wadenheben Maschine", h:"Unten 1 s dehnen, oben 1 s halten."},
+      {n:"Seated Crunch", s:"3 × 15", w:"35", q:"Crunch Maschine", h:"Bauch bewusst einrollen, nicht mit Armen ziehen."}
+    ]
+  },
+  {
+    id:"mi", tab:"Mi · Cardio", title:"Mittwoch — Cardio + Core (optional)",
+    desc:"Dein wichtigster Tag für den Fettverlust. Locker genug, dass du dich dabei unterhalten könntest (Zone 2).",
+    ex:[
+      {n:"Laufband: Incline Walk", s:"30–40 min", w:"Z2", q:"Incline Walking Laufband Fettverbrennung", cardio:true, h:"Steigung 8–12 %, Tempo 5–6 km/h, nicht festhalten."},
+      {n:"Plank", s:"3 × 30–60 s", w:"—", q:"Plank Unterarmstütz richtig", cardio:true, h:"Gesäß anspannen, Körper eine Linie."},
+      {n:"Cable Crunch kniend", s:"3 × 15", w:"—", q:"Cable Crunch kniend Kabelzug", cardio:true, h:"Hüfte bleibt fix, nur Oberkörper einrollen."}
+    ]
+  },
+  {
+    id:"do", tab:"Do · OK B", title:"Donnerstag (früh oder abends) — Oberkörper B",
+    desc:"Andere Winkel als Montag. Face Pulls sind dein Ausgleich zum vielen Drücken.",
+    ex:[
+      {n:"Schrägbankdrücken Kurzhanteln", s:"4 × 8–10", w:"18→20", q:"Schrägbankdrücken Kurzhanteln", h:"Bank 30°, Hanteln über der oberen Brust."},
+      {n:"Enges Kabelrudern", s:"4 × 10", w:"—", q:"Kabelrudern enger Griff sitzend", h:"Aufrecht bleiben, zum Bauchnabel ziehen."},
+      {n:"Butterfly", s:"3 × 12", w:"20", q:"Butterfly Maschine Brust", h:"Leichte Ellbogenbeugung, Dehnung spüren."},
+      {n:"Face Pulls", s:"3 × 12–15", w:"leicht", q:"Face Pulls Kabelzug", h:"Seil zur Stirn, Ellbogen hoch und außen."},
+      {n:"Bizepscurls Kurzhanteln", s:"3 × 10–12", w:"18", q:"Bizepscurls Kurzhanteln stehend", h:"Kein Schwung aus dem Rücken."},
+      {n:"Überkopf-Trizeps-Extensions", s:"3 × 12", w:"—", q:"Trizeps Überkopf Kabelzug", h:"Ellbogen eng, voll strecken."}
+    ]
+  },
+  {
+    id:"fr", tab:"Fr · UK B", title:"Freitag früh — Unterkörper B",
+    desc:"Fokus hintere Kette: RDLs sind neu und die wichtigste Ergänzung im Plan.",
+    ex:[
+      {n:"Rumänisches Kreuzheben (KH)", s:"4 × 10", w:"KH", q:"Rumänisches Kreuzheben Kurzhanteln", h:"Hüfte nach hinten, Rücken gerade, Dehnung im Beinbeuger."},
+      {n:"Beinstrecker", s:"3 × 12", w:"45", q:"Beinstrecker Maschine", h:"Oben kurz halten, langsam ablassen."},
+      {n:"Beinbeuger sitzend", s:"3 × 12", w:"45", q:"Beinbeuger sitzend Maschine", h:"Volle Bewegungsamplitude."},
+      {n:"Wadenheben", s:"3 × 15", w:"140", q:"Wadenheben Maschine", h:"Keine federnden Wiederholungen."},
+      {n:"Hängendes Beinheben", s:"3 × 12–15", w:"—", q:"Hängendes Beinheben", h:"Becken einrollen, nicht nur Beine schwingen. Alternativ: Cable Crunch."}
+    ]
+  }
+];
+
+const STORE_KEY = "trainingsplan-checks-v1";
+let checks = {};
+
+function loadChecks(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(raw) checks = JSON.parse(raw);
+  }catch(e){ /* noch nichts gespeichert oder Speicher nicht verfügbar */ }
+  render();
+}
+function saveChecks(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(checks)); }catch(e){}
+}
+
+let activeDay = "mo";
+const tabs = document.getElementById("tabs");
+const content = document.getElementById("content");
+
+function render(){
+  tabs.innerHTML = "";
+  content.innerHTML = "";
+  plan.forEach(day=>{
+    const b = document.createElement("button");
+    b.textContent = day.tab;
+    b.className = day.id===activeDay ? "active":"";
+    b.onclick = ()=>{ activeDay = day.id; render(); window.scrollTo({top:0}); };
+    tabs.appendChild(b);
+
+    const sec = document.createElement("section");
+    sec.className = "day"+(day.id===activeDay?" visible":"");
+    let html = `<div class="day-head"><h2>${day.title}</h2><p>${day.desc}</p></div>`;
+    day.ex.forEach((e,i)=>{
+      const key = day.id+"-"+i;
+      const done = checks[key];
+      html += `
+      <div class="ex${done?" done":""}" id="ex-${key}">
+        <div class="plate${e.cardio?" cardio":""}"><span>${e.w}</span></div>
+        <div class="info">
+          <h3>${e.n}</h3>
+          <div class="scheme">${e.s}</div>
+          <div class="hint">${e.h}</div>
+        </div>
+        <div class="actions">
+          <a class="vid" target="_blank" rel="noopener" href="${yt(e.q)}">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Video
+          </a>
+          <button class="check" aria-label="${e.n} abhaken" onclick="toggle('${key}')">✓</button>
+        </div>
+      </div>`;
+    });
+    if(day.id==="mo") html += `<div class="note"><strong>Progression:</strong> Schaffst du das obere Ende der Wiederholungen in allen Sätzen sauber, erhöhe das Gewicht um die kleinste Stufe.</div>`;
+    if(day.id==="mi") html += `<div class="note"><strong>Schritte-Tipp:</strong> 30 min Incline Walk ≈ 3.500 Schritte. Der Rest kommt aus dem Alltag — 10k sind ein Tagesdurchschnitt, kein Laufband-Pflichtprogramm.</div>`;
+    if(day.id==="fr") html += `<div class="note"><strong>Wochenende:</strong> 2 Tage Pause. Ein langer Spaziergang am Samstag oder Sonntag hält den Schritteschnitt oben.</div>`;
+    html += `<button class="reset" onclick="resetDay('${day.id}')">Haken für diesen Tag zurücksetzen</button>`;
+    sec.innerHTML = html;
+    content.appendChild(sec);
+  });
+}
+
+function toggle(key){
+  checks[key] = !checks[key];
+  if(!checks[key]) delete checks[key];
+  saveChecks();
+  render();
+}
+function resetDay(dayId){
+  Object.keys(checks).forEach(k=>{ if(k.startsWith(dayId+"-")) delete checks[k]; });
+  saveChecks();
+  render();
+}
+
+loadChecks();
+
+// Service Worker registrieren – nötig für Offline-Nutzung & Installierbarkeit.
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
