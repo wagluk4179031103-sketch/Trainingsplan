@@ -38,7 +38,7 @@
   header{
     background:var(--pine);
     color:#fff;
-    padding:22px 20px 18px;
+    padding:22px 20px 16px;
   }
   header .eyebrow{
     font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -48,14 +48,21 @@
     font-family:'Archivo Black',sans-serif;
     font-size:24px;line-height:1.1;letter-spacing:-.01em;
   }
-  header .sub{font-size:13px;color:#CFE0D5;margin-top:8px;max-width:38ch}
-  #planbar{margin-top:10px}
+  #planbar{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   #planbar select{
-    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:13px;
     background:#174931;color:#fff;
-    border:1px solid #2E7050;border-radius:10px;
-    padding:8px 10px;max-width:100%;
+    border:1px solid #2E7050;border-radius:999px;
+    padding:7px 10px;max-width:100%;
   }
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:12px;
+    background:#174931;color:#fff;
+    border:1px solid #2E7050;border-radius:999px;
+    padding:7px 12px;cursor:pointer;
+  }
+  #sync-status{font-size:11px;color:#BCD4C6;margin-top:8px}
   nav{
     position:sticky;top:0;z-index:10;
     display:flex;gap:6px;overflow-x:auto;
@@ -64,6 +71,7 @@
     border-bottom:1px solid var(--line);
     scrollbar-width:none;
   }
+  nav:empty{display:none}
   nav::-webkit-scrollbar{display:none}
   nav button{
     flex:0 0 auto;
@@ -77,7 +85,7 @@
     background:var(--ink);color:#fff;border-color:var(--ink);
   }
   nav button:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
-  main{padding:18px 16px}
+  main{padding:18px 16px;max-width:640px;margin:0 auto}
   .day-head{margin:4px 4px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
   .day-head h2{font-family:'Archivo Black',sans-serif;font-size:20px}
   .day-head p{font-size:13px;color:var(--steel);margin-top:4px}
@@ -172,6 +180,7 @@
     margin-top:14px;
   }
   .note strong{color:var(--pine)}
+  .note a{color:var(--pine)}
   .reset{
     display:block;margin:20px auto 0;
     background:none;border:none;
@@ -181,6 +190,14 @@
   .empty{
     text-align:center;color:var(--sage);font-size:14px;
     padding:40px 20px;line-height:1.6;
+  }
+  /* Benutzer */
+  .avatar{
+    width:42px;height:42px;border-radius:50%;
+    background:var(--pine);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Archivo Black',sans-serif;font-size:14px;
+    flex:0 0 auto;
   }
   /* Fortschritt */
   .summary{
@@ -206,7 +223,7 @@
   .prog .range{font-size:12px;color:var(--steel);margin-top:4px}
   .chart{width:100%;height:80px;margin-top:8px;display:block}
   .chart-dates{display:flex;justify-content:space-between;font-size:11px;color:var(--sage);margin-top:2px}
-  /* Einstellungen */
+  /* Einstellungen / Formulare */
   .set-sec{margin-bottom:22px}
   .set-sec h3{font-family:'Archivo Black',sans-serif;font-size:16px;margin:0 4px 10px}
   .row{
@@ -215,6 +232,7 @@
     display:flex;align-items:center;gap:10px;
   }
   .row .grow{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .sub2{font-size:12px;color:var(--sage);font-weight:400;display:block;margin-top:2px}
   .row .tag{font-size:11px;color:var(--pine);background:var(--pine-soft);border-radius:999px;padding:3px 8px;white-space:nowrap}
   .row.plain{cursor:pointer}
   .btn{
@@ -226,6 +244,20 @@
   }
   .btn.ghost{background:var(--card);color:var(--steel);border:1px solid var(--line)}
   .btn.warn{background:#fff;color:var(--red);border:1px solid #E8D5CB}
+  .f-label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin:14px 0 5px}
+  .field{
+    width:100%;font-family:'Archivo',sans-serif;font-size:16px;
+    padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);
+  }
+  details{
+    background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:12px 14px;margin:10px 0;font-size:13px;color:var(--steel);line-height:1.55;
+  }
+  details summary{font-weight:600;color:var(--pine);cursor:pointer}
+  details ol{margin:8px 0 0 18px}
+  details li{margin-bottom:6px}
+  details a{color:var(--pine)}
   /* Modal */
   .overlay{
     position:fixed;inset:0;background:rgba(23,33,27,.45);
@@ -239,9 +271,9 @@
     padding:20px 18px 26px;
   }
   @media(min-width:520px){.modal{border-radius:20px}}
-  .modal h3{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:14px}
+  .modal h3{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:4px}
   .modal label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin:12px 0 5px}
-  .modal input[type=text],.modal input[type=number],.modal textarea{
+  .modal input[type=text],.modal input[type=number],.modal input[type=password],.modal textarea{
     width:100%;font-family:'Archivo',sans-serif;font-size:16px;
     padding:11px 12px;border:1px solid var(--line);border-radius:10px;
     background:var(--card);color:var(--ink);
@@ -279,8 +311,8 @@
 <header>
   <div class="eyebrow">EVO Fitness Bel &amp; Main · Muskelaufbau + Fettverlust</div>
   <h1 id="plan-title">Trainingsplan</h1>
-  <div class="sub">Tippe aufs Gewicht, um es zu ändern — dein Fortschritt wird automatisch aufgezeichnet.</div>
   <div id="planbar"></div>
+  <div id="sync-status"></div>
 </header>
 
 <nav id="tabs"></nav>
@@ -288,7 +320,7 @@
 <div id="modal-root"></div>
 
 <script>
-/* ---------- Helfer ---------- */
+/* ================= Helfer ================= */
 const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " Ausführung Technik");
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -296,8 +328,27 @@ const todayISO = () => { const d=new Date(); return d.getFullYear()+"-"+String(d
 const fmtDate = d => d.slice(8,10)+"."+d.slice(5,7)+".";
 const parseW = raw => { const m = String(raw??"").replace(",",".").match(/\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; };
 const fmtNum = n => (Math.round(n*100)/100).toString().replace(".",",");
+const slug = name => {
+  const map = {ä:"ae",ö:"oe",ü:"ue",ß:"ss",Ä:"ae",Ö:"oe",Ü:"ue"};
+  return name.replace(/[äöüßÄÖÜ]/g, c=>map[c]).toLowerCase()
+    .replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)
+    + "-" + Math.random().toString(36).slice(2,6);
+};
+/* UTF-8-sicheres Base64 (in Blöcken, damit große Dateien funktionieren) */
+function b64e(str){
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  for(let i=0;i<bytes.length;i+=8192) bin += String.fromCharCode.apply(null, bytes.subarray(i,i+8192));
+  return btoa(bin);
+}
+function b64d(b64){
+  const bin = atob(String(b64).replace(/\s/g,""));
+  const bytes = new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
 
-/* ---------- Standardplan (Vorlage) ---------- */
+/* ================= Standardplan (Vorlage) ================= */
 function seedPlan(){
   const t = todayISO();
   const E = (id,n,sets,reps,w,q,h,cardio) => {
@@ -363,72 +414,212 @@ function seedPlan(){
   };
 }
 
-/* ---------- Speicher & Migration ---------- */
-const KEY = "trainingsplan-data-v2";
-const OLD_KEY = "trainingsplan-checks-v1";
-let S = null;
-let view = { type:"day", dayId:null };
+/* ================= Gerät / Sync-Konfiguration ================= */
+const DKEY = "tp3-device";
+let device = { repoOwner:"wagluk4179031103-sketch", repoName:"Trainingsplan-Daten", token:"", userId:"" };
+function loadDevice(){
+  try{ const d = JSON.parse(localStorage.getItem(DKEY)); if(d) device = Object.assign(device, d); }catch(e){}
+}
+function saveDevice(){ try{ localStorage.setItem(DKEY, JSON.stringify(device)); }catch(e){} }
+
+/* ================= Benutzer-Zustand ================= */
+let U = null;        // aktiver Benutzer: {id, name, plans, activePlanId, checks, updatedAt}
+let sha = null;      // SHA der Remote-Datei (für Updates)
+let dirty = false;   // lokale Änderungen noch nicht hochgeladen
+let view = { type:"welcome", dayId:null };
 let editMode = false;
 
-function load(){
+const cacheKey = id => "tp3-user-" + id;
+function loadCache(id){
+  try{ const c = JSON.parse(localStorage.getItem(cacheKey(id))); if(c && c.data) return c; }catch(e){}
+  return null;
+}
+function saveCache(){
+  if(!U) return;
+  try{ localStorage.setItem(cacheKey(U.id), JSON.stringify({data:U, sha, dirty})); }catch(e){}
+}
+function localUserList(){
+  const out = [];
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith("tp3-user-")){
+      try{ const c = JSON.parse(localStorage.getItem(k));
+        if(c && c.data) out.push({id:c.data.id, name:c.data.name, local:true});
+      }catch(e){}
+    }
+  }
+  return out;
+}
+
+/* ================= GitHub-API ================= */
+const api = path => "https://api.github.com/repos/" + device.repoOwner + "/" + device.repoName + (path ? "/" + path : "");
+const filePath = id => "users/" + id + ".json";
+const hdrs = () => ({
+  "Authorization": "Bearer " + device.token,
+  "Accept": "application/vnd.github+json",
+  "X-GitHub-Api-Version": "2022-11-28"
+});
+
+async function pullUser(id){
+  const res = await fetch(api("contents/" + filePath(id)), {headers:hdrs(), cache:"no-store"});
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  const j = await res.json();
+  return { data: JSON.parse(b64d(j.content)), sha: j.sha };
+}
+
+async function listUsers(){
+  const res = await fetch(api("contents/users"), {headers:hdrs(), cache:"no-store"});
+  if(res.status === 404) return [];
+  if(!res.ok) throw new Error("HTTP " + res.status);
+  const items = await res.json();
+  const ids = (Array.isArray(items)?items:[]).filter(i=>i.name.endsWith(".json")).map(i=>i.name.slice(0,-5));
+  const users = await Promise.all(ids.map(async id => {
+    try{ const r = await pullUser(id); return {id, name:(r&&r.data.name)||id}; }
+    catch(e){ return {id, name:id}; }
+  }));
+  return users;
+}
+
+let pushing = false, pushQueued = false, syncTimer = null;
+async function pushUser(){
+  if(!device.token || !U){ setSync("off"); return; }
+  if(pushing){ pushQueued = true; return; }
+  pushing = true; setSync("syncing");
   try{
-    const raw = localStorage.getItem(KEY);
-    if(raw){ S = JSON.parse(raw); }
-  }catch(e){}
-  if(!S || !Array.isArray(S.plans) || !S.plans.length){
-    S = { v:2, plans:[seedPlan()], activePlanId:"p1", checks:{} };
-    // alte Häkchen (v1) übernehmen — die Übungs-IDs stimmen überein
-    try{
-      const old = localStorage.getItem(OLD_KEY);
-      if(old) S.checks = JSON.parse(old) || {};
-    }catch(e){}
-    save();
+    const body = { message: "Trainingsplan: " + U.name, content: b64e(JSON.stringify(U)) };
+    if(sha) body.sha = sha;
+    let res = await fetch(api("contents/" + filePath(U.id)), {method:"PUT", headers:hdrs(), body:JSON.stringify(body)});
+    if(res.status === 409 || res.status === 422){
+      // Konflikt: Remote-Stand holen, neuere Version gewinnt
+      const r = await pullUser(U.id);
+      if(r && (r.data.updatedAt||"") > (U.updatedAt||"")){
+        U = r.data; sha = r.sha; dirty = false; saveCache(); render();
+        toast("Neuere Daten von anderem Gerät geladen");
+        setSync("ok"); return;
+      }
+      if(r) body.sha = r.sha; else delete body.sha;
+      res = await fetch(api("contents/" + filePath(U.id)), {method:"PUT", headers:hdrs(), body:JSON.stringify(body)});
+    }
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const j = await res.json();
+    sha = j.content.sha; dirty = false; saveCache();
+    setSync("ok");
+  }catch(e){
+    dirty = true; saveCache();
+    setSync(navigator.onLine === false ? "offline" : "error");
+  }finally{
+    pushing = false;
+    if(pushQueued){ pushQueued = false; pushUser(); }
   }
 }
+function scheduleSync(){
+  if(!device.token){ setSync("off"); return; }
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushUser, 1500);
+}
+async function backgroundRefresh(){
+  if(!device.token || !U) return;
+  try{
+    setSync("syncing");
+    const r = await pullUser(U.id);
+    if(!r){ dirty = true; await pushUser(); return; }
+    if((r.data.updatedAt||"") > (U.updatedAt||"")){
+      U = r.data; sha = r.sha; dirty = false; saveCache(); render(); setSync("ok");
+    } else if(dirty || (U.updatedAt||"") > (r.data.updatedAt||"")){
+      sha = r.sha; await pushUser();
+    } else {
+      sha = r.sha; saveCache(); setSync("ok");
+    }
+  }catch(e){ setSync(navigator.onLine === false ? "offline" : "error"); }
+}
+function syncNow(){
+  if(!device.token){ toast("Sync ist nicht eingerichtet"); return; }
+  backgroundRefresh();
+}
+
+/* Sync-Statusanzeige */
+let syncState = "off";
+function setSync(state){
+  syncState = state;
+  const el = document.getElementById("sync-status");
+  if(!el) return;
+  const map = {
+    off:      "Sync aus — Daten nur auf diesem Gerät",
+    syncing:  "☁️ Synchronisiere…",
+    ok:       "☁️ Auf GitHub gesichert · " + new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"}),
+    offline:  "⚠️ Offline — Änderungen werden nachgeholt",
+    error:    "⚠️ Sync-Fehler — Schlüssel unter ⚙️ prüfen"
+  };
+  el.textContent = (U ? map[state] : "") || "";
+}
+
+/* ================= Zustand ändern ================= */
 function save(){
-  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+  if(!U) return;
+  U.updatedAt = new Date().toISOString();
+  dirty = true; saveCache(); scheduleSync();
 }
 function activePlan(){
-  return S.plans.find(p=>p.id===S.activePlanId) || S.plans[0];
+  return U.plans.find(p=>p.id===U.activePlanId) || U.plans[0];
 }
 function findDay(dayId){ return activePlan().days.find(d=>d.id===dayId); }
 function findEx(dayId, exId){ const d=findDay(dayId); return d ? d.ex.find(e=>e.id===exId) : null; }
 
-/* Gewichtsänderung protokollieren */
+/* Gewichtsänderung protokollieren — Startwert bleibt als Basis erhalten */
 function recordWeight(ex, newRaw){
   if(String(newRaw) === String(ex.w)) return;
   ex.w = newRaw;
   const n = parseW(newRaw);
-  const entry = { d: todayISO(), w: newRaw, n };
+  if(!Array.isArray(ex.hist)) ex.hist = [];
   const last = ex.hist[ex.hist.length-1];
-  if(last && last.d === entry.d) ex.hist[ex.hist.length-1] = entry;
-  else ex.hist.push(entry);
+  if(last && last.n === n && String(last.w) === String(newRaw)) return;
+  ex.hist.push({ d: todayISO(), w: newRaw, n });
+  // Verlauf begrenzen, Basis-Eintrag behalten
+  if(ex.hist.length > 150) ex.hist = [ex.hist[0]].concat(ex.hist.slice(-149));
 }
 
-/* ---------- Rendering ---------- */
+/* ================= Rendering ================= */
 const tabsEl = document.getElementById("tabs");
 const contentEl = document.getElementById("content");
 
 function render(){
+  if(view.type === "welcome"){ renderBareHeader(); renderWelcome(); return; }
+  if(view.type === "users"){ renderBareHeader(); renderUsersView(); return; }
+  if(!U){ view = {type: device.token ? "users" : "welcome"}; render(); return; }
   const plan = activePlan();
-  if(view.type==="day" && (!view.dayId || !findDay(view.dayId))){
+  if(view.type === "day" && (!view.dayId || !findDay(view.dayId))){
     view.dayId = plan.days[0] ? plan.days[0].id : null;
   }
   renderHeader(plan);
   renderNav(plan);
-  if(view.type==="day") renderDay(plan);
-  else if(view.type==="progress") renderProgress(plan);
+  if(view.type === "day") renderDay(plan);
+  else if(view.type === "progress") renderProgress(plan);
   else renderSettings(plan);
 }
 
+function renderBareHeader(){
+  document.getElementById("plan-title").textContent = "Trainingsplan";
+  document.getElementById("planbar").innerHTML = "";
+  document.getElementById("sync-status").textContent = "";
+  tabsEl.innerHTML = "";
+}
+
+function initials(name){
+  return name.split(/\s+/).filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase() || "?";
+}
+
 function renderHeader(plan){
-  document.getElementById("plan-title").textContent = plan.name;
+  document.getElementById("plan-title").textContent = plan ? plan.name : "Trainingsplan";
   const bar = document.getElementById("planbar");
-  if(S.plans.length > 1){
-    bar.innerHTML = `<select onchange="setActivePlan(this.value)" aria-label="Trainingsplan wählen">` +
-      S.plans.map(p=>`<option value="${p.id}"${p.id===plan.id?" selected":""}>${esc(p.name)}</option>`).join("") +
+  let html = `<button class="chip" onclick="goUsers()">👤 ${esc(U.name)}</button>`;
+  if(U.plans.length > 1){
+    html += `<select onchange="setActivePlan(this.value)" aria-label="Trainingsplan wählen">` +
+      U.plans.map(p=>`<option value="${p.id}"${p.id===U.activePlanId?" selected":""}>${esc(p.name)}</option>`).join("") +
       `</select>`;
-  } else bar.innerHTML = "";
+  }
+  bar.innerHTML = html;
+  setSync(syncState);
 }
 
 function renderNav(plan){
@@ -440,13 +631,205 @@ function renderNav(plan){
   tabsEl.innerHTML = html;
 }
 
-function schemeText(e){
-  const parts = [];
-  if(e.sets && e.sets>0) parts.push(e.sets + " × " + e.reps);
-  else parts.push(e.reps);
-  return parts.join(" ");
+/* ---------- Willkommen / Sync einrichten ---------- */
+function renderWelcome(){
+  contentEl.innerHTML = `
+  <div class="day-head"><div>
+    <h2>☁️ Synchronisation einrichten</h2>
+    <p>Deine Trainingsdaten werden automatisch in einem privaten GitHub-Ordner gesichert — kein manuelles Backup nötig, und alle Geräte bleiben auf dem gleichen Stand.</p>
+  </div></div>
+  <label class="f-label">Sync-Schlüssel</label>
+  <input type="password" id="f-token" class="field" placeholder="github_pat_…" autocomplete="off">
+  <details>
+    <summary>Wie bekomme ich den Sync-Schlüssel? (einmalig, ~2 Min.)</summary>
+    <ol>
+      <li>Auf <strong>github.com</strong> mit dem Haupt-Account anmelden (dem gehört der Datenspeicher).</li>
+      <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Diese Seite öffnen</a> (Settings → Developer settings → Fine-grained tokens).</li>
+      <li>Name: <strong>Trainingsplan Sync</strong> · Expiration: möglichst lang (z. B. 1 Jahr).</li>
+      <li>Repository access: <strong>Only select repositories</strong> → <strong>Trainingsplan-Daten</strong> auswählen.</li>
+      <li>Permissions → Repository permissions → <strong>Contents: Read and write</strong>.</li>
+      <li><strong>Generate token</strong> → den Schlüssel (beginnt mit <code>github_pat_</code>) kopieren und oben einfügen.</li>
+    </ol>
+    Denselben Schlüssel auf jedem Gerät einfügen (auch bei Anika) — alle teilen sich denselben Datenspeicher. Der Schlüssel wird nur auf dem Gerät gespeichert.
+  </details>
+  <details>
+    <summary>Erweitert: eigener Datenspeicher</summary>
+    <label class="f-label">GitHub-Benutzer (Owner)</label>
+    <input type="text" id="f-owner" class="field" value="${esc(device.repoOwner)}">
+    <label class="f-label">Repository-Name</label>
+    <input type="text" id="f-repo" class="field" value="${esc(device.repoName)}">
+  </details>
+  <div style="margin-top:16px">
+    <button class="btn" onclick="connectSync()">Verbinden</button>
+    <button class="btn ghost" onclick="skipSync()">Ohne Sync weiter (nur dieses Gerät)</button>
+    ${U ? `<button class="reset" onclick="goBack()">Zurück</button>` : ""}
+  </div>`;
+}
+async function connectSync(){
+  const t = document.getElementById("f-token").value.trim();
+  const ow = (document.getElementById("f-owner")||{}).value, rp = (document.getElementById("f-repo")||{}).value;
+  if(ow && ow.trim()) device.repoOwner = ow.trim();
+  if(rp && rp.trim()) device.repoName = rp.trim();
+  if(!t){ alert("Bitte den Sync-Schlüssel einfügen."); return; }
+  const prev = device.token;
+  device.token = t;
+  try{
+    const res = await fetch(api(""), {headers:hdrs(), cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    saveDevice();
+    toast("Verbunden ✓");
+    if(U){ dirty = true; pushUser(); view = {type:"settings"}; }
+    else view = {type:"users"};
+    render();
+  }catch(e){
+    device.token = prev;
+    alert("Verbindung fehlgeschlagen (" + e.message + ").\n\nPrüfe:\n• Schlüssel vollständig kopiert?\n• Zugriff auf " + device.repoOwner + "/" + device.repoName + " erlaubt?\n• Contents: Read and write gesetzt?");
+  }
+}
+function skipSync(){ view = {type:"users"}; render(); }
+function goBack(){ view = {type: U ? "settings" : "welcome"}; render(); }
+function goUsers(){ view = {type:"users"}; render(); }
+function goWelcome(){ view = {type:"welcome"}; render(); }
+
+/* ---------- Benutzerauswahl ---------- */
+function userCard(u){
+  return `<div class="row plain" onclick="selectUser('${u.id}')">
+    <div class="avatar">${esc(initials(u.name))}</div>
+    <div class="grow">${esc(u.name)}${u.local && device.token ? `<span class="sub2">nur lokal auf diesem Gerät</span>`:""}</div>
+    ${device.userId===u.id?'<span class="tag">zuletzt</span>':""}
+  </div>`;
+}
+function renderUsersView(){
+  let html = `<div class="day-head"><div>
+    <h2>Wer trainiert?</h2>
+    <p>Wähle deinen Benutzer oder lege einen neuen an. Jeder hat eigene Pläne und eigenen Fortschritt.</p>
+  </div></div>
+  <div id="user-list">`;
+  const locals = localUserList();
+  html += locals.map(userCard).join("");
+  if(device.token) html += `<div class="empty" id="user-loading">☁️ Lade Benutzer…</div>`;
+  else if(!locals.length) html += `<div class="empty">Noch keine Benutzer auf diesem Gerät.</div>`;
+  html += `</div>
+  <button class="add-btn" onclick="openUserModal()">+ Neuer Benutzer</button>`;
+  if(!device.token){
+    html += `<div class="note">☁️ <strong>Sync ist aus.</strong> Benutzer und Daten bleiben nur auf diesem Gerät. <a href="#" onclick="goWelcome();return false">Jetzt einrichten</a></div>`;
+  }
+  if(U) html += `<button class="reset" onclick="view={type:'day',dayId:null};render()">Zurück zum Training</button>`;
+  contentEl.innerHTML = html;
+
+  if(device.token){
+    listUsers().then(remote=>{
+      const listEl = document.getElementById("user-list");
+      if(!listEl) return;
+      const seen = {};
+      let cards = "";
+      remote.forEach(u=>{ seen[u.id]=1; cards += userCard(u); });
+      locals.forEach(u=>{ if(!seen[u.id]) cards += userCard(u); });
+      listEl.innerHTML = cards || `<div class="empty">Noch keine Benutzer — lege den ersten an!</div>`;
+    }).catch(()=>{
+      const l = document.getElementById("user-loading");
+      if(l) l.innerHTML = "⚠️ Konnte Benutzerliste nicht laden (offline?).<br>Lokale Benutzer funktionieren weiterhin.";
+    });
+  }
+}
+async function selectUser(id){
+  const cached = loadCache(id);
+  if(cached){
+    U = cached.data; sha = cached.sha || null; dirty = !!cached.dirty;
+  } else if(device.token){
+    contentEl.innerHTML = `<div class="empty">☁️ Lade Daten…</div>`;
+    try{
+      const r = await pullUser(id);
+      if(!r){ alert("Benutzer nicht gefunden."); renderUsersView(); return; }
+      U = r.data; sha = r.sha; dirty = false; saveCache();
+    }catch(e){ alert("Konnte Benutzer nicht laden (offline?)."); renderUsersView(); return; }
+  } else return;
+  device.userId = id; saveDevice();
+  editMode = false;
+  view = {type:"day", dayId:null};
+  render();
+  if(device.token) backgroundRefresh();
+}
+function openUserModal(){
+  openModal(`
+    <h3>Neuer Benutzer</h3>
+    <label>Name</label>
+    <input type="text" id="f-user-name" placeholder="z. B. Anika Bauer">
+    <div class="m-note">Der neue Benutzer startet mit dem Standard-Trainingsplan und kann ihn frei anpassen.</div>
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="createUser()">Anlegen</button>
+    </div>`);
+  setTimeout(()=>{ const i=document.getElementById("f-user-name"); if(i) i.focus(); }, 50);
+}
+function createUser(){
+  const name = document.getElementById("f-user-name").value.trim();
+  if(!name){ alert("Bitte einen Namen eingeben."); return; }
+  const id = slug(name);
+  let data = null;
+  // Bestehende Gerätedaten (v2) einmalig dem ersten Benutzer zuordnen
+  try{
+    const v2raw = localStorage.getItem("trainingsplan-data-v2");
+    if(v2raw && !localStorage.getItem("tp3-v2-consumed")){
+      const v2 = JSON.parse(v2raw);
+      if(v2 && Array.isArray(v2.plans) && v2.plans.length){
+        data = { plans: v2.plans, activePlanId: v2.activePlanId, checks: v2.checks || {} };
+        localStorage.setItem("tp3-v2-consumed","1");
+      }
+    }
+  }catch(e){}
+  if(!data) data = { plans:[seedPlan()], activePlanId:"p1", checks:{} };
+  U = Object.assign({id, name, updatedAt:new Date().toISOString()}, data);
+  sha = null; dirty = true; saveCache();
+  device.userId = id; saveDevice();
+  closeModal();
+  view = {type:"day", dayId:null};
+  render();
+  if(device.token) pushUser();
+  toast("Willkommen, " + name.split(" ")[0] + "! 💪");
+}
+function renameUserUI(){
+  openModal(`
+    <h3>Benutzer umbenennen</h3>
+    <label>Name</label>
+    <input type="text" id="f-user-name" value="${esc(U.name)}">
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="renameUser()">Speichern</button>
+    </div>`);
+}
+function renameUser(){
+  const name = document.getElementById("f-user-name").value.trim();
+  if(!name){ alert("Bitte einen Namen eingeben."); return; }
+  U.name = name; save(); closeModal(); render();
+}
+async function deleteUser(){
+  if(!U) return;
+  if(!confirm(`Benutzer „${U.name}" und ALLE seine Daten endgültig löschen?`)) return;
+  if(device.token){
+    try{
+      let s = sha;
+      if(!s){ const r = await pullUser(U.id); s = r && r.sha; }
+      if(s){
+        const res = await fetch(api("contents/" + filePath(U.id)), {
+          method:"DELETE", headers:hdrs(),
+          body: JSON.stringify({message:"Benutzer gelöscht: " + U.name, sha:s})
+        });
+        if(!res.ok && res.status !== 404) throw new Error("HTTP " + res.status);
+      }
+    }catch(e){ alert("Online-Daten konnten nicht gelöscht werden (offline?). Vorgang abgebrochen."); return; }
+  }
+  localStorage.removeItem(cacheKey(U.id));
+  U = null; sha = null; dirty = false;
+  device.userId = ""; saveDevice();
+  view = {type:"users"}; render();
 }
 
+/* ---------- Trainingstag ---------- */
+function schemeText(e){
+  if(e.sets && e.sets>0) return e.sets + " × " + e.reps;
+  return e.reps;
+}
 function renderDay(plan){
   const day = findDay(view.dayId);
   if(!day){
@@ -454,7 +837,7 @@ function renderDay(plan){
     return;
   }
   const total = day.ex.length;
-  const done = day.ex.filter(e=>S.checks[e.id]).length;
+  const done = day.ex.filter(e=>U.checks[e.id]).length;
   let html = `<div class="day-head">
     <div>
       <h2>${esc(day.title)}</h2>
@@ -465,7 +848,7 @@ function renderDay(plan){
   </div>`;
 
   day.ex.forEach((e,i)=>{
-    const isDone = !!S.checks[e.id];
+    const isDone = !!U.checks[e.id];
     const actions = editMode
       ? `<div class="actions edit">
            <button class="icon-btn" aria-label="Bearbeiten" onclick="openExModal('${day.id}','${e.id}')">✎</button>
@@ -514,7 +897,6 @@ function chartSVG(pts){
   </svg>
   <div class="chart-dates"><span>${fmtDate(pts[0].d)}</span><span>${fmtDate(pts[pts.length-1].d)}</span></div>`;
 }
-
 function renderProgress(plan){
   let rows = "";
   let totalDelta = 0, improved = 0, tracked = 0;
@@ -548,21 +930,39 @@ function renderProgress(plan){
     </div>` + rows;
   } else {
     html = `<div class="empty">📈<br><br>Noch kein Verlauf vorhanden.<br>
-    Tippe bei einer Übung auf das <strong>Gewichts-Badge</strong> (der runde Kreis) und erhöhe dein Gewicht — ab der zweiten Änderung erscheint hier deine Fortschrittskurve.</div>`;
+    Tippe bei einer Übung auf den <strong>runden Gewichts-Kreis</strong> und ändere das Gewicht — deine Fortschrittskurve erscheint hier sofort nach der ersten Änderung.</div>`;
   }
   contentEl.innerHTML = html;
 }
 
 /* ---------- Einstellungen ---------- */
 function renderSettings(plan){
-  let html = `<div class="set-sec"><h3>Trainingspläne</h3>`;
-  S.plans.forEach(p=>{
+  const syncSec = device.token
+    ? `<div class="row"><div class="grow">☁️ Verbunden<span class="sub2">${esc(device.repoOwner)}/${esc(device.repoName)}</span></div><span class="tag">aktiv</span></div>
+       <button class="btn ghost" onclick="syncNow()">Jetzt synchronisieren</button>
+       <button class="btn ghost" onclick="goWelcome()">Sync-Schlüssel ändern</button>
+       <button class="btn warn" onclick="disconnectSync()">Sync trennen (Daten bleiben lokal)</button>`
+    : `<div class="row"><div class="grow">Sync ist aus<span class="sub2">Daten nur auf diesem Gerät</span></div></div>
+       <button class="btn" onclick="goWelcome()">☁️ Sync einrichten</button>`;
+
+  let html = `<div class="set-sec"><h3>Benutzer</h3>
+    <div class="row"><div class="avatar">${esc(initials(U.name))}</div><div class="grow">${esc(U.name)}</div>
+      <button class="icon-btn" aria-label="Umbenennen" onclick="renameUserUI()">✎</button>
+    </div>
+    <button class="btn ghost" onclick="goUsers()">Benutzer wechseln</button>
+    <button class="btn warn" onclick="deleteUser()">Diesen Benutzer löschen</button>
+  </div>`;
+
+  html += `<div class="set-sec"><h3>Synchronisation</h3>${syncSec}</div>`;
+
+  html += `<div class="set-sec"><h3>Trainingspläne</h3>`;
+  U.plans.forEach(p=>{
     html += `<div class="row">
       <div class="grow">${esc(p.name)}</div>
-      ${p.id===S.activePlanId?`<span class="tag">aktiv</span>`:`<button class="icon-btn" aria-label="Aktivieren" onclick="setActivePlan('${p.id}')">▶</button>`}
+      ${p.id===U.activePlanId?`<span class="tag">aktiv</span>`:`<button class="icon-btn" aria-label="Aktivieren" onclick="setActivePlan('${p.id}')">▶</button>`}
       <button class="icon-btn" aria-label="Umbenennen" onclick="openNameModal('${p.id}')">✎</button>
       <button class="icon-btn" aria-label="Duplizieren" onclick="dupPlan('${p.id}')">⧉</button>
-      <button class="icon-btn danger" aria-label="Löschen" onclick="delPlan('${p.id}')" ${S.plans.length<2?"disabled":""}>🗑</button>
+      <button class="icon-btn danger" aria-label="Löschen" onclick="delPlan('${p.id}')" ${U.plans.length<2?"disabled":""}>🗑</button>
     </div>`;
   });
   html += `<button class="btn ghost" onclick="openNameModal(null)">+ Neuer Plan</button>
@@ -581,13 +981,18 @@ function renderSettings(plan){
   html += `<button class="btn ghost" onclick="openDayModal(null)">+ Neuer Tag</button></div>`;
 
   html += `<div class="set-sec"><h3>Daten</h3>
-    <button class="btn ghost" onclick="exportData()">⬇ Backup exportieren (JSON)</button>
+    <button class="btn ghost" onclick="exportData()">⬇ Backup dieses Benutzers exportieren</button>
     <button class="btn ghost" onclick="document.getElementById('import-file').click()">⬆ Backup importieren</button>
     <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importData(this.files[0]);this.value=''">
     <button class="btn warn" onclick="resetAllChecks()">Alle Haken zurücksetzen</button>
-    <div class="m-note">Deine Daten liegen nur lokal auf diesem Gerät (localStorage). Exportiere gelegentlich ein Backup — z. B. bevor du Browserdaten löschst oder das Handy wechselst.</div>
+    ${device.token?`<div class="m-note">Mit aktivem Sync sind manuelle Backups nur eine zusätzliche Absicherung — GitHub speichert automatisch jede Änderung.</div>`:""}
   </div>`;
   contentEl.innerHTML = html;
+}
+function disconnectSync(){
+  if(!confirm("Sync wirklich trennen? Deine Daten bleiben auf diesem Gerät erhalten, werden aber nicht mehr auf GitHub gesichert.")) return;
+  device.token = ""; saveDevice();
+  setSync("off"); render();
 }
 
 /* ---------- Navigation ---------- */
@@ -595,30 +1000,30 @@ function switchDay(id){ view={type:"day",dayId:id}; editMode=false; render(); wi
 function switchView(t){ view={type:t,dayId:view.dayId}; render(); window.scrollTo({top:0}); }
 function toggleEditMode(){ editMode=!editMode; render(); }
 function setActivePlan(id){
-  S.activePlanId=id;
-  const p=activePlan();
-  view={type:view.type==="day"?"day":view.type, dayId:p.days[0]?p.days[0].id:null};
+  U.activePlanId = id;
+  const p = activePlan();
+  view = {type:view.type==="settings"?"settings":"day", dayId:p.days[0]?p.days[0].id:null};
   save(); render();
 }
 
 /* ---------- Abhaken + Konfetti ---------- */
 function toggle(dayId, exId){
-  const wasChecked = !!S.checks[exId];
-  if(wasChecked) delete S.checks[exId]; else S.checks[exId]=true;
+  const wasChecked = !!U.checks[exId];
+  if(wasChecked) delete U.checks[exId]; else U.checks[exId]=true;
   save();
   const day = findDay(dayId);
-  const complete = !wasChecked && day.ex.length>0 && day.ex.every(e=>S.checks[e.id]);
+  const complete = !wasChecked && day.ex.length>0 && day.ex.every(e=>U.checks[e.id]);
   render();
   if(complete){ confetti(); toast("Stark! Alles erledigt 💪"); }
 }
 function resetDay(dayId){
   const day=findDay(dayId);
-  if(day) day.ex.forEach(e=>{ delete S.checks[e.id]; });
+  if(day) day.ex.forEach(e=>{ delete U.checks[e.id]; });
   save(); render();
 }
 function resetAllChecks(){
   if(!confirm("Wirklich alle Haken in allen Plänen zurücksetzen?")) return;
-  S.checks={}; save(); render();
+  U.checks={}; save(); render();
 }
 
 /* ---------- Übungen ---------- */
@@ -635,7 +1040,7 @@ function delEx(dayId, exId){
   if(!confirm(`„${ex.n}" wirklich löschen?`)) return;
   const day=findDay(dayId);
   day.ex=day.ex.filter(e=>e.id!==exId);
-  delete S.checks[exId];
+  delete U.checks[exId];
   save(); render();
 }
 
@@ -679,7 +1084,6 @@ function saveEx(dayId, exId){
   const day = findDay(dayId);
   if(exId){
     const ex = findEx(dayId,exId);
-    // YouTube-Suche folgt dem Namen, außer es gab eine speziellere Suchanfrage
     if(!ex.q || ex.q === ex.n) ex.q = name;
     ex.n = name; ex.sets = sets; ex.reps = reps; ex.h = h; ex.cardio = cardio;
     recordWeight(ex, w);
@@ -771,7 +1175,7 @@ function delDay(dayId){
   const day = findDay(dayId);
   if(!confirm(`Tag „${day.title}" mit ${day.ex.length} Übungen wirklich löschen?`)) return;
   const plan = activePlan();
-  day.ex.forEach(e=>{ delete S.checks[e.id]; });
+  day.ex.forEach(e=>{ delete U.checks[e.id]; });
   plan.days = plan.days.filter(d=>d.id!==dayId);
   if(view.dayId===dayId) view.dayId = plan.days[0] ? plan.days[0].id : null;
   save(); render();
@@ -779,7 +1183,7 @@ function delDay(dayId){
 
 /* Pläne */
 function openNameModal(planId){
-  const plan = planId ? S.plans.find(p=>p.id===planId) : null;
+  const plan = planId ? U.plans.find(p=>p.id===planId) : null;
   openModal(`
     <h3>${plan?"Plan umbenennen":"Neuer Trainingsplan"}</h3>
     <label>Name</label>
@@ -793,31 +1197,31 @@ function savePlanName(planId){
   const name = document.getElementById("f-plan-name").value.trim();
   if(!name){ alert("Bitte einen Namen eingeben."); return; }
   if(planId){
-    S.plans.find(p=>p.id===planId).name = name;
+    U.plans.find(p=>p.id===planId).name = name;
   } else {
     const p = { id:uid(), name, days:[] };
-    S.plans.push(p);
-    S.activePlanId = p.id;
+    U.plans.push(p);
+    U.activePlanId = p.id;
     view = { type:"settings", dayId:null };
   }
   save(); closeModal(); render();
 }
 function dupPlan(planId){
-  const src = S.plans.find(p=>p.id===planId);
+  const src = U.plans.find(p=>p.id===planId);
   const copy = JSON.parse(JSON.stringify(src));
   copy.id = uid();
   copy.name = src.name + " (Kopie)";
   copy.days.forEach(d=>{ d.id = uid(); d.ex.forEach(e=>{ e.id = uid(); }); });
-  S.plans.push(copy);
+  U.plans.push(copy);
   save(); render();
 }
 function delPlan(planId){
-  if(S.plans.length<2) return;
-  const p = S.plans.find(x=>x.id===planId);
+  if(U.plans.length<2) return;
+  const p = U.plans.find(x=>x.id===planId);
   if(!confirm(`Plan „${p.name}" wirklich löschen? Der Gewichtsverlauf dieses Plans geht verloren.`)) return;
-  S.plans = S.plans.filter(x=>x.id!==planId);
-  if(S.activePlanId===planId){
-    S.activePlanId = S.plans[0].id;
+  U.plans = U.plans.filter(x=>x.id!==planId);
+  if(U.activePlanId===planId){
+    U.activePlanId = U.plans[0].id;
     view = { type:"settings", dayId:null };
   }
   save(); render();
@@ -827,17 +1231,17 @@ function restoreTemplate(){
   p.id = uid();
   p.name = "Ober-/Unterkörper-Split (Standard)";
   p.days.forEach(d=>{ d.id = uid()+d.id; d.ex.forEach(e=>{ e.id = uid(); }); });
-  S.plans.push(p);
+  U.plans.push(p);
   save(); render();
   toast("Standardplan hinzugefügt");
 }
 
 /* ---------- Export / Import ---------- */
 function exportData(){
-  const blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const blob = new Blob([JSON.stringify(U,null,2)],{type:"application/json"});
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = "trainingsplan-backup-"+todayISO()+".json";
+  a.download = "trainingsplan-" + (U.id||"backup") + "-" + todayISO() + ".json";
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -848,10 +1252,10 @@ function importData(file){
     try{
       const data = JSON.parse(r.result);
       if(!data || !Array.isArray(data.plans) || !data.plans.length) throw new Error("bad");
-      if(!confirm("Backup importieren? Deine aktuellen Daten werden ersetzt.")) return;
-      S = data;
-      if(!S.checks) S.checks = {};
-      if(!S.plans.find(p=>p.id===S.activePlanId)) S.activePlanId = S.plans[0].id;
+      if(!confirm("Backup importieren? Die Pläne dieses Benutzers werden ersetzt.")) return;
+      U.plans = data.plans;
+      U.activePlanId = data.plans.find(p=>p.id===data.activePlanId) ? data.activePlanId : data.plans[0].id;
+      U.checks = data.checks || {};
       view = { type:"day", dayId:null };
       save(); render();
       toast("Backup importiert ✓");
@@ -904,8 +1308,22 @@ function toast(msg){
 }
 
 /* ---------- Start ---------- */
-load();
-render();
+function init(){
+  loadDevice();
+  const cached = device.userId ? loadCache(device.userId) : null;
+  if(cached){
+    U = cached.data; sha = cached.sha || null; dirty = !!cached.dirty;
+    view = {type:"day", dayId:null};
+  } else if(device.token){
+    view = {type:"users"};
+  } else {
+    view = {type:"welcome"};
+  }
+  render();
+  if(device.token && U) backgroundRefresh();
+  window.addEventListener("online", ()=>{ if(dirty && device.token) pushUser(); });
+}
+init();
 
 // Service Worker registrieren – nötig für Offline-Nutzung & Installierbarkeit.
 if("serviceWorker" in navigator){

@@ -1,5 +1,5 @@
 // Service Worker für den Trainingsplan – ermöglicht Offline-Nutzung.
-const CACHE = "trainingsplan-v2";
+const CACHE = "trainingsplan-v3";
 
 // App-Shell: lokale Dateien, die für den Offline-Betrieb vorab gecacht werden.
 const ASSETS = [
@@ -34,11 +34,19 @@ self.addEventListener("activate", event => {
 });
 
 // Fetch-Strategie:
+// - GitHub-API (Sync) und andere fremde Hosts: NIE cachen, direkt durchreichen.
 // - Navigationsanfragen: Netzwerk zuerst, bei Offline auf gecachte Seite zurückfallen.
-// - Sonstige GET-Anfragen (Assets, Fonts): Cache zuerst, dann Netzwerk und dabei nachcachen.
+// - App-Dateien & Google Fonts: Cache zuerst, dann Netzwerk und dabei nachcachen.
 self.addEventListener("fetch", event => {
   const req = event.request;
   if (req.method !== "GET") return;
+
+  const url = new URL(req.url);
+  const cacheable =
+    url.origin === self.location.origin ||
+    url.hostname === "fonts.googleapis.com" ||
+    url.hostname === "fonts.gstatic.com";
+  if (!cacheable) return; // z. B. api.github.com → Browser-Standardverhalten
 
   if (req.mode === "navigate") {
     event.respondWith(
@@ -51,7 +59,6 @@ self.addEventListener("fetch", event => {
     caches.match(req).then(cached => {
       if (cached) return cached;
       return fetch(req).then(res => {
-        // Erfolgreiche Antworten (auch Google Fonts) für später ablegen.
         if (res && res.status === 200 &&
             (res.type === "basic" || res.type === "cors")) {
           const copy = res.clone();
