@@ -683,7 +683,18 @@ async function connectSync(){
     render();
   }catch(e){
     device.token = prev;
-    alert("Verbindung fehlgeschlagen (" + e.message + ").\n\nPrüfe:\n• Schlüssel vollständig kopiert?\n• Zugriff auf " + device.repoOwner + "/" + device.repoName + " erlaubt?\n• Contents: Read and write gesetzt?");
+    const s = String(e.message || "");
+    let hint;
+    if(s.indexOf("404") >= 0){
+      hint = "Der Schlüssel kann das Daten-Repo nicht sehen (bei privaten Repos meldet GitHub dann 404).\n\nSo behebst du es — neuen Schlüssel erstellen und dabei:\n1. Repository access: „Only select repositories\" wählen (NICHT die Voreinstellung „Public repositories\")\n2. Dort „" + device.repoName + "\" auswählen\n3. Permissions → Contents: „Read and write\"\n\nAußerdem: Der Schlüssel muss vom Account „" + device.repoOwner + "\" erstellt sein.";
+    } else if(s.indexOf("401") >= 0){
+      hint = "Der Schlüssel ist ungültig oder abgelaufen. Bitte neu erstellen und vollständig kopieren (beginnt mit github_pat_).";
+    } else if(s.indexOf("403") >= 0){
+      hint = "Zugriff verweigert. Prüfe beim Schlüssel: Permissions → Contents: „Read and write\".";
+    } else {
+      hint = "Bist du online? Bitte Internetverbindung prüfen und erneut versuchen.";
+    }
+    alert("Verbindung fehlgeschlagen (" + (s || "Netzwerkfehler") + ").\n\n" + hint);
   }
 }
 function skipSync(){ view = {type:"users"}; render(); }
