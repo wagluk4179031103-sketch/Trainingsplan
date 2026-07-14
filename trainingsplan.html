@@ -25,6 +25,8 @@
     --sage:#8FA89A;
     --line:#E2E7E2;
     --steel:#3A4540;
+    --gold:#F2C14E;
+    --red:#B4552D;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{
@@ -36,7 +38,7 @@
   header{
     background:var(--pine);
     color:#fff;
-    padding:26px 20px 20px;
+    padding:22px 20px 18px;
   }
   header .eyebrow{
     font-size:11px;letter-spacing:.18em;text-transform:uppercase;
@@ -44,9 +46,16 @@
   }
   header h1{
     font-family:'Archivo Black',sans-serif;
-    font-size:26px;line-height:1.1;letter-spacing:-.01em;
+    font-size:24px;line-height:1.1;letter-spacing:-.01em;
   }
-  header .sub{font-size:13px;color:#CFE0D5;margin-top:8px;max-width:34ch}
+  header .sub{font-size:13px;color:#CFE0D5;margin-top:8px;max-width:38ch}
+  #planbar{margin-top:10px}
+  #planbar select{
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    background:#174931;color:#fff;
+    border:1px solid #2E7050;border-radius:10px;
+    padding:8px 10px;max-width:100%;
+  }
   nav{
     position:sticky;top:0;z-index:10;
     display:flex;gap:6px;overflow-x:auto;
@@ -69,13 +78,23 @@
   }
   nav button:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
   main{padding:18px 16px}
-  .day{display:none}
-  .day.visible{display:block}
-  .day-head{margin:4px 4px 14px}
-  .day-head h2{
-    font-family:'Archivo Black',sans-serif;font-size:20px;
-  }
+  .day-head{margin:4px 4px 14px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .day-head h2{font-family:'Archivo Black',sans-serif;font-size:20px}
   .day-head p{font-size:13px;color:var(--steel);margin-top:4px}
+  .pill{
+    display:inline-block;margin-top:8px;
+    font-size:12px;font-weight:600;color:var(--pine);
+    background:var(--pine-soft);border-radius:999px;padding:4px 10px;
+  }
+  .pill.full{background:var(--pine);color:#fff}
+  .editmode-btn{
+    flex:0 0 auto;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:12px;
+    border:1px solid var(--line);border-radius:999px;
+    background:var(--card);color:var(--steel);
+    padding:7px 12px;cursor:pointer;white-space:nowrap;
+  }
+  .editmode-btn.on{background:var(--pine);border-color:var(--pine);color:#fff}
   .ex{
     background:var(--card);
     border:1px solid var(--line);
@@ -89,19 +108,19 @@
     transition:opacity .2s;
   }
   .ex.done{opacity:.45}
-  /* Hantelscheiben-Badge */
   .plate{
     width:52px;height:52px;border-radius:50%;
     background:radial-gradient(circle at 50% 50%, var(--paper) 0 26%, var(--ink) 27% 100%);
     border:3px solid var(--ink);
     display:flex;align-items:center;justify-content:center;
-    position:relative;
+    position:relative;cursor:pointer;padding:0;
   }
   .plate span{
     background:var(--ink);color:#fff;
     font-family:'Archivo Black',sans-serif;font-size:11px;
     padding:2px 5px;border-radius:4px;line-height:1;
     letter-spacing:.02em;
+    max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .plate.cardio{
     background:radial-gradient(circle at 50% 50%, var(--paper) 0 26%, var(--pine) 27% 100%);
@@ -109,13 +128,10 @@
   }
   .plate.cardio span{background:var(--pine)}
   .info h3{font-size:15px;font-weight:600;line-height:1.25}
-  .info .scheme{
-    font-size:13px;color:var(--steel);margin-top:3px;
-  }
-  .info .hint{
-    font-size:12px;color:var(--sage);margin-top:3px;line-height:1.35;
-  }
+  .info .scheme{font-size:13px;color:var(--steel);margin-top:3px}
+  .info .hint{font-size:12px;color:var(--sage);margin-top:3px;line-height:1.35}
   .actions{display:flex;flex-direction:column;gap:8px;align-items:center}
+  .actions.edit{flex-direction:row;flex-wrap:wrap;max-width:76px;justify-content:flex-end}
   .vid{
     display:flex;align-items:center;gap:5px;
     background:var(--pine-soft);color:var(--pine);
@@ -134,6 +150,20 @@
   }
   .ex.done .check{background:var(--pine);border-color:var(--pine);color:#fff}
   .check:focus-visible{outline:2px solid var(--pine);outline-offset:2px}
+  .icon-btn{
+    width:32px;height:32px;border-radius:9px;
+    border:1px solid var(--line);background:var(--card);
+    font-size:14px;cursor:pointer;color:var(--steel);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .icon-btn.danger{color:var(--red);border-color:#E8D5CB}
+  .add-btn{
+    display:block;width:100%;
+    border:2px dashed var(--sage);border-radius:14px;
+    background:none;color:var(--pine);
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    padding:14px;cursor:pointer;margin-bottom:10px;
+  }
   .note{
     background:var(--pine-soft);
     border-radius:14px;
@@ -148,154 +178,734 @@
     font-family:'Archivo',sans-serif;font-size:12px;
     color:var(--sage);text-decoration:underline;cursor:pointer;
   }
+  .empty{
+    text-align:center;color:var(--sage);font-size:14px;
+    padding:40px 20px;line-height:1.6;
+  }
+  /* Fortschritt */
+  .summary{
+    background:var(--pine);color:#fff;border-radius:14px;
+    padding:16px;margin-bottom:16px;
+  }
+  .summary .big{font-family:'Archivo Black',sans-serif;font-size:26px}
+  .summary .lbl{font-size:12px;color:#BCD4C6;margin-top:2px}
+  .prog-day{margin:18px 4px 8px;font-family:'Archivo Black',sans-serif;font-size:15px}
+  .prog{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px;margin-bottom:10px;
+  }
+  .prog .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .prog h4{font-size:14px;font-weight:600}
+  .delta{
+    font-family:'Archivo Black',sans-serif;font-size:13px;
+    padding:3px 9px;border-radius:999px;white-space:nowrap;
+  }
+  .delta.up{background:var(--pine-soft);color:var(--pine)}
+  .delta.dn{background:#F5E4DC;color:var(--red)}
+  .delta.eq{background:#EEF1EE;color:var(--steel)}
+  .prog .range{font-size:12px;color:var(--steel);margin-top:4px}
+  .chart{width:100%;height:80px;margin-top:8px;display:block}
+  .chart-dates{display:flex;justify-content:space-between;font-size:11px;color:var(--sage);margin-top:2px}
+  /* Einstellungen */
+  .set-sec{margin-bottom:22px}
+  .set-sec h3{font-family:'Archivo Black',sans-serif;font-size:16px;margin:0 4px 10px}
+  .row{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;margin-bottom:8px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .row .grow{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .tag{font-size:11px;color:var(--pine);background:var(--pine-soft);border-radius:999px;padding:3px 8px;white-space:nowrap}
+  .row.plain{cursor:pointer}
+  .btn{
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    background:var(--pine);color:#fff;
+    border:none;border-radius:12px;
+    padding:12px 16px;cursor:pointer;
+    width:100%;margin-bottom:8px;
+  }
+  .btn.ghost{background:var(--card);color:var(--steel);border:1px solid var(--line)}
+  .btn.warn{background:#fff;color:var(--red);border:1px solid #E8D5CB}
+  /* Modal */
+  .overlay{
+    position:fixed;inset:0;background:rgba(23,33,27,.45);
+    display:flex;align-items:flex-end;justify-content:center;
+    z-index:50;
+  }
+  @media(min-width:520px){.overlay{align-items:center}}
+  .modal{
+    background:var(--paper);border-radius:20px 20px 0 0;
+    width:100%;max-width:520px;max-height:88vh;overflow-y:auto;
+    padding:20px 18px 26px;
+  }
+  @media(min-width:520px){.modal{border-radius:20px}}
+  .modal h3{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:14px}
+  .modal label{display:block;font-size:12px;font-weight:600;color:var(--steel);margin:12px 0 5px}
+  .modal input[type=text],.modal input[type=number],.modal textarea{
+    width:100%;font-family:'Archivo',sans-serif;font-size:16px;
+    padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+    background:var(--card);color:var(--ink);
+  }
+  .modal textarea{min-height:64px;resize:vertical}
+  .modal .chkline{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:14px}
+  .modal .chkline input{width:18px;height:18px;accent-color:var(--pine)}
+  .modal .m-note{font-size:12px;color:var(--sage);margin-top:10px;line-height:1.4}
+  .m-actions{display:flex;gap:8px;margin-top:18px}
+  .m-actions .btn{margin:0}
+  .steppers{display:flex;gap:6px;margin-top:8px}
+  .steppers button{
+    flex:1;font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    background:var(--pine-soft);color:var(--pine);
+    border:none;border-radius:10px;padding:10px 0;cursor:pointer;
+  }
+  .hist-preview{font-size:12px;color:var(--steel);margin-top:10px;line-height:1.5}
+  /* Konfetti + Toast */
+  canvas.confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:100}
+  .toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+    background:var(--ink);color:#fff;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:14px;
+    padding:12px 20px;border-radius:999px;z-index:101;
+    animation:toastin .25s ease-out;
+    white-space:nowrap;
+  }
+  @keyframes toastin{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
   @media (prefers-reduced-motion: reduce){
-    *{transition:none!important}
+    *{transition:none!important;animation:none!important}
   }
 </style>
 </head>
 <body>
 <header>
   <div class="eyebrow">EVO Fitness Bel &amp; Main · Muskelaufbau + Fettverlust</div>
-  <h1>Ober-/Unterkörper-Split</h1>
-  <div class="sub">Jede Übung hat einen Video-Button mit Ausführungsvideos. Hak ab, was erledigt ist.</div>
+  <h1 id="plan-title">Trainingsplan</h1>
+  <div class="sub">Tippe aufs Gewicht, um es zu ändern — dein Fortschritt wird automatisch aufgezeichnet.</div>
+  <div id="planbar"></div>
 </header>
 
 <nav id="tabs"></nav>
 <main id="content"></main>
+<div id="modal-root"></div>
 
 <script>
+/* ---------- Helfer ---------- */
 const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " Ausführung Technik");
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const todayISO = () => { const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+const fmtDate = d => d.slice(8,10)+"."+d.slice(5,7)+".";
+const parseW = raw => { const m = String(raw??"").replace(",",".").match(/\d+(\.\d+)?/); return m ? parseFloat(m[0]) : null; };
+const fmtNum = n => (Math.round(n*100)/100).toString().replace(".",",");
 
-const plan = [
-  {
-    id:"mo", tab:"Mo · OK A", title:"Montag früh — Oberkörper A",
-    desc:"Drücken + Ziehen im Gleichgewicht. Pausen 90–120 s bei den ersten beiden, sonst 60–90 s.",
-    ex:[
-      {n:"Brustpresse Maschine", s:"4 × 8–10", w:"60–65", q:"Brustpresse Maschine", h:"Schulterblätter zurück, nicht ganz aussperren."},
-      {n:"Latzug zur Brust", s:"4 × 8–10", w:"60", q:"Latzug breiter Griff", h:"Zur oberen Brust ziehen, Ellbogen nach unten."},
-      {n:"Schulterdrücken Maschine", s:"3 × 10", w:"45", q:"Schulterdrücken Maschine", h:"Unterarme senkrecht, kein Hohlkreuz."},
-      {n:"Rudermaschine", s:"3 × 10–12", w:"60", q:"Rudern Maschine Brustauflage", h:"Schulterblätter aktiv zusammenziehen."},
-      {n:"Seitheben am Kabel", s:"3 × 12–15", w:"9,5", q:"Seitheben Kabelzug einarmig", h:"Langsam absenken — die Negative zählt."},
-      {n:"Trizeps Pushdown", s:"3 × 12", w:"25", q:"Trizepsdrücken Kabelzug", h:"Ellbogen bleiben am Körper fixiert."}
+/* ---------- Standardplan (Vorlage) ---------- */
+function seedPlan(){
+  const t = todayISO();
+  const E = (id,n,sets,reps,w,q,h,cardio) => {
+    const num = parseW(w);
+    return { id, n, sets, reps, w, q, h, cardio: !!cardio,
+             hist: num !== null ? [{d:t, w, n:num}] : [] };
+  };
+  return {
+    id: "p1",
+    name: "Ober-/Unterkörper-Split",
+    days: [
+      { id:"mo", tab:"Mo · OK A", title:"Montag früh — Oberkörper A",
+        desc:"Drücken + Ziehen im Gleichgewicht. Pausen 90–120 s bei den ersten beiden, sonst 60–90 s.",
+        note:"<strong>Progression:</strong> Schaffst du das obere Ende der Wiederholungen in allen Sätzen sauber, erhöhe das Gewicht um die kleinste Stufe.",
+        ex:[
+          E("mo-0","Brustpresse Maschine",4,"8–10","60–65","Brustpresse Maschine","Schulterblätter zurück, nicht ganz aussperren."),
+          E("mo-1","Latzug zur Brust",4,"8–10","60","Latzug breiter Griff","Zur oberen Brust ziehen, Ellbogen nach unten."),
+          E("mo-2","Schulterdrücken Maschine",3,"10","45","Schulterdrücken Maschine","Unterarme senkrecht, kein Hohlkreuz."),
+          E("mo-3","Rudermaschine",3,"10–12","60","Rudern Maschine Brustauflage","Schulterblätter aktiv zusammenziehen."),
+          E("mo-4","Seitheben am Kabel",3,"12–15","9,5","Seitheben Kabelzug einarmig","Langsam absenken — die Negative zählt."),
+          E("mo-5","Trizeps Pushdown",3,"12","25","Trizepsdrücken Kabelzug","Ellbogen bleiben am Körper fixiert.")
+        ]},
+      { id:"di", tab:"Di · UK A", title:"Dienstag — Unterkörper A",
+        desc:"Schwerer Beintag. Beinpresse zuerst, solange du frisch bist.",
+        note:"",
+        ex:[
+          E("di-0","Beinpresse",4,"8–10","110","Beinpresse","Tief runter, Knie in Richtung Zehenspitzen."),
+          E("di-1","Beinbeuger sitzend",3,"10–12","45","Beinbeuger sitzend Maschine","Oben kontrolliert, unten kurz halten."),
+          E("di-2","Ausfallschritte mit Kurzhanteln",3,"10 / Bein","KH","Ausfallschritte Kurzhanteln","Großer Schritt, Oberkörper leicht vorgeneigt."),
+          E("di-3","Wadenheben",3,"12–15","140","Wadenheben Maschine","Unten 1 s dehnen, oben 1 s halten."),
+          E("di-4","Seated Crunch",3,"15","35","Crunch Maschine","Bauch bewusst einrollen, nicht mit Armen ziehen.")
+        ]},
+      { id:"mi", tab:"Mi · Cardio", title:"Mittwoch — Cardio + Core (optional)",
+        desc:"Dein wichtigster Tag für den Fettverlust. Locker genug, dass du dich dabei unterhalten könntest (Zone 2).",
+        note:"<strong>Schritte-Tipp:</strong> 30 min Incline Walk ≈ 3.500 Schritte. Der Rest kommt aus dem Alltag — 10k sind ein Tagesdurchschnitt, kein Laufband-Pflichtprogramm.",
+        ex:[
+          E("mi-0","Laufband: Incline Walk",0,"30–40 min","Z2","Incline Walking Laufband Fettverbrennung","Steigung 8–12 %, Tempo 5–6 km/h, nicht festhalten.",true),
+          E("mi-1","Plank",3,"30–60 s","—","Plank Unterarmstütz richtig","Gesäß anspannen, Körper eine Linie.",true),
+          E("mi-2","Cable Crunch kniend",3,"15","—","Cable Crunch kniend Kabelzug","Hüfte bleibt fix, nur Oberkörper einrollen.",true)
+        ]},
+      { id:"do", tab:"Do · OK B", title:"Donnerstag (früh oder abends) — Oberkörper B",
+        desc:"Andere Winkel als Montag. Face Pulls sind dein Ausgleich zum vielen Drücken.",
+        note:"",
+        ex:[
+          E("do-0","Schrägbankdrücken Kurzhanteln",4,"8–10","18→20","Schrägbankdrücken Kurzhanteln","Bank 30°, Hanteln über der oberen Brust."),
+          E("do-1","Enges Kabelrudern",4,"10","—","Kabelrudern enger Griff sitzend","Aufrecht bleiben, zum Bauchnabel ziehen."),
+          E("do-2","Butterfly",3,"12","20","Butterfly Maschine Brust","Leichte Ellbogenbeugung, Dehnung spüren."),
+          E("do-3","Face Pulls",3,"12–15","leicht","Face Pulls Kabelzug","Seil zur Stirn, Ellbogen hoch und außen."),
+          E("do-4","Bizepscurls Kurzhanteln",3,"10–12","18","Bizepscurls Kurzhanteln stehend","Kein Schwung aus dem Rücken."),
+          E("do-5","Überkopf-Trizeps-Extensions",3,"12","—","Trizeps Überkopf Kabelzug","Ellbogen eng, voll strecken.")
+        ]},
+      { id:"fr", tab:"Fr · UK B", title:"Freitag früh — Unterkörper B",
+        desc:"Fokus hintere Kette: RDLs sind neu und die wichtigste Ergänzung im Plan.",
+        note:"<strong>Wochenende:</strong> 2 Tage Pause. Ein langer Spaziergang am Samstag oder Sonntag hält den Schritteschnitt oben.",
+        ex:[
+          E("fr-0","Rumänisches Kreuzheben (KH)",4,"10","KH","Rumänisches Kreuzheben Kurzhanteln","Hüfte nach hinten, Rücken gerade, Dehnung im Beinbeuger."),
+          E("fr-1","Beinstrecker",3,"12","45","Beinstrecker Maschine","Oben kurz halten, langsam ablassen."),
+          E("fr-2","Beinbeuger sitzend",3,"12","45","Beinbeuger sitzend Maschine","Volle Bewegungsamplitude."),
+          E("fr-3","Wadenheben",3,"15","140","Wadenheben Maschine","Keine federnden Wiederholungen."),
+          E("fr-4","Hängendes Beinheben",3,"12–15","—","Hängendes Beinheben","Becken einrollen, nicht nur Beine schwingen. Alternativ: Cable Crunch.")
+        ]}
     ]
-  },
-  {
-    id:"di", tab:"Di · UK A", title:"Dienstag — Unterkörper A",
-    desc:"Schwerer Beintag. Beinpresse zuerst, solange du frisch bist.",
-    ex:[
-      {n:"Beinpresse", s:"4 × 8–10", w:"110", q:"Beinpresse", h:"Tief runter, Knie in Richtung Zehenspitzen."},
-      {n:"Beinbeuger sitzend", s:"3 × 10–12", w:"45", q:"Beinbeuger sitzend Maschine", h:"Oben kontrolliert, unten kurz halten."},
-      {n:"Ausfallschritte mit Kurzhanteln", s:"3 × 10 / Bein", w:"KH", q:"Ausfallschritte Kurzhanteln", h:"Großer Schritt, Oberkörper leicht vorgeneigt."},
-      {n:"Wadenheben", s:"3 × 12–15", w:"140", q:"Wadenheben Maschine", h:"Unten 1 s dehnen, oben 1 s halten."},
-      {n:"Seated Crunch", s:"3 × 15", w:"35", q:"Crunch Maschine", h:"Bauch bewusst einrollen, nicht mit Armen ziehen."}
-    ]
-  },
-  {
-    id:"mi", tab:"Mi · Cardio", title:"Mittwoch — Cardio + Core (optional)",
-    desc:"Dein wichtigster Tag für den Fettverlust. Locker genug, dass du dich dabei unterhalten könntest (Zone 2).",
-    ex:[
-      {n:"Laufband: Incline Walk", s:"30–40 min", w:"Z2", q:"Incline Walking Laufband Fettverbrennung", cardio:true, h:"Steigung 8–12 %, Tempo 5–6 km/h, nicht festhalten."},
-      {n:"Plank", s:"3 × 30–60 s", w:"—", q:"Plank Unterarmstütz richtig", cardio:true, h:"Gesäß anspannen, Körper eine Linie."},
-      {n:"Cable Crunch kniend", s:"3 × 15", w:"—", q:"Cable Crunch kniend Kabelzug", cardio:true, h:"Hüfte bleibt fix, nur Oberkörper einrollen."}
-    ]
-  },
-  {
-    id:"do", tab:"Do · OK B", title:"Donnerstag (früh oder abends) — Oberkörper B",
-    desc:"Andere Winkel als Montag. Face Pulls sind dein Ausgleich zum vielen Drücken.",
-    ex:[
-      {n:"Schrägbankdrücken Kurzhanteln", s:"4 × 8–10", w:"18→20", q:"Schrägbankdrücken Kurzhanteln", h:"Bank 30°, Hanteln über der oberen Brust."},
-      {n:"Enges Kabelrudern", s:"4 × 10", w:"—", q:"Kabelrudern enger Griff sitzend", h:"Aufrecht bleiben, zum Bauchnabel ziehen."},
-      {n:"Butterfly", s:"3 × 12", w:"20", q:"Butterfly Maschine Brust", h:"Leichte Ellbogenbeugung, Dehnung spüren."},
-      {n:"Face Pulls", s:"3 × 12–15", w:"leicht", q:"Face Pulls Kabelzug", h:"Seil zur Stirn, Ellbogen hoch und außen."},
-      {n:"Bizepscurls Kurzhanteln", s:"3 × 10–12", w:"18", q:"Bizepscurls Kurzhanteln stehend", h:"Kein Schwung aus dem Rücken."},
-      {n:"Überkopf-Trizeps-Extensions", s:"3 × 12", w:"—", q:"Trizeps Überkopf Kabelzug", h:"Ellbogen eng, voll strecken."}
-    ]
-  },
-  {
-    id:"fr", tab:"Fr · UK B", title:"Freitag früh — Unterkörper B",
-    desc:"Fokus hintere Kette: RDLs sind neu und die wichtigste Ergänzung im Plan.",
-    ex:[
-      {n:"Rumänisches Kreuzheben (KH)", s:"4 × 10", w:"KH", q:"Rumänisches Kreuzheben Kurzhanteln", h:"Hüfte nach hinten, Rücken gerade, Dehnung im Beinbeuger."},
-      {n:"Beinstrecker", s:"3 × 12", w:"45", q:"Beinstrecker Maschine", h:"Oben kurz halten, langsam ablassen."},
-      {n:"Beinbeuger sitzend", s:"3 × 12", w:"45", q:"Beinbeuger sitzend Maschine", h:"Volle Bewegungsamplitude."},
-      {n:"Wadenheben", s:"3 × 15", w:"140", q:"Wadenheben Maschine", h:"Keine federnden Wiederholungen."},
-      {n:"Hängendes Beinheben", s:"3 × 12–15", w:"—", q:"Hängendes Beinheben", h:"Becken einrollen, nicht nur Beine schwingen. Alternativ: Cable Crunch."}
-    ]
-  }
-];
+  };
+}
 
-const STORE_KEY = "trainingsplan-checks-v1";
-let checks = {};
+/* ---------- Speicher & Migration ---------- */
+const KEY = "trainingsplan-data-v2";
+const OLD_KEY = "trainingsplan-checks-v1";
+let S = null;
+let view = { type:"day", dayId:null };
+let editMode = false;
 
-function loadChecks(){
+function load(){
   try{
-    const raw = localStorage.getItem(STORE_KEY);
-    if(raw) checks = JSON.parse(raw);
-  }catch(e){ /* noch nichts gespeichert oder Speicher nicht verfügbar */ }
-  render();
+    const raw = localStorage.getItem(KEY);
+    if(raw){ S = JSON.parse(raw); }
+  }catch(e){}
+  if(!S || !Array.isArray(S.plans) || !S.plans.length){
+    S = { v:2, plans:[seedPlan()], activePlanId:"p1", checks:{} };
+    // alte Häkchen (v1) übernehmen — die Übungs-IDs stimmen überein
+    try{
+      const old = localStorage.getItem(OLD_KEY);
+      if(old) S.checks = JSON.parse(old) || {};
+    }catch(e){}
+    save();
+  }
 }
-function saveChecks(){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(checks)); }catch(e){}
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+}
+function activePlan(){
+  return S.plans.find(p=>p.id===S.activePlanId) || S.plans[0];
+}
+function findDay(dayId){ return activePlan().days.find(d=>d.id===dayId); }
+function findEx(dayId, exId){ const d=findDay(dayId); return d ? d.ex.find(e=>e.id===exId) : null; }
+
+/* Gewichtsänderung protokollieren */
+function recordWeight(ex, newRaw){
+  if(String(newRaw) === String(ex.w)) return;
+  ex.w = newRaw;
+  const n = parseW(newRaw);
+  const entry = { d: todayISO(), w: newRaw, n };
+  const last = ex.hist[ex.hist.length-1];
+  if(last && last.d === entry.d) ex.hist[ex.hist.length-1] = entry;
+  else ex.hist.push(entry);
 }
 
-let activeDay = "mo";
-const tabs = document.getElementById("tabs");
-const content = document.getElementById("content");
+/* ---------- Rendering ---------- */
+const tabsEl = document.getElementById("tabs");
+const contentEl = document.getElementById("content");
 
 function render(){
-  tabs.innerHTML = "";
-  content.innerHTML = "";
-  plan.forEach(day=>{
-    const b = document.createElement("button");
-    b.textContent = day.tab;
-    b.className = day.id===activeDay ? "active":"";
-    b.onclick = ()=>{ activeDay = day.id; render(); window.scrollTo({top:0}); };
-    tabs.appendChild(b);
+  const plan = activePlan();
+  if(view.type==="day" && (!view.dayId || !findDay(view.dayId))){
+    view.dayId = plan.days[0] ? plan.days[0].id : null;
+  }
+  renderHeader(plan);
+  renderNav(plan);
+  if(view.type==="day") renderDay(plan);
+  else if(view.type==="progress") renderProgress(plan);
+  else renderSettings(plan);
+}
 
-    const sec = document.createElement("section");
-    sec.className = "day"+(day.id===activeDay?" visible":"");
-    let html = `<div class="day-head"><h2>${day.title}</h2><p>${day.desc}</p></div>`;
-    day.ex.forEach((e,i)=>{
-      const key = day.id+"-"+i;
-      const done = checks[key];
-      html += `
-      <div class="ex${done?" done":""}" id="ex-${key}">
-        <div class="plate${e.cardio?" cardio":""}"><span>${e.w}</span></div>
-        <div class="info">
-          <h3>${e.n}</h3>
-          <div class="scheme">${e.s}</div>
-          <div class="hint">${e.h}</div>
-        </div>
-        <div class="actions">
-          <a class="vid" target="_blank" rel="noopener" href="${yt(e.q)}">
-            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Video
-          </a>
-          <button class="check" aria-label="${e.n} abhaken" onclick="toggle('${key}')">✓</button>
-        </div>
+function renderHeader(plan){
+  document.getElementById("plan-title").textContent = plan.name;
+  const bar = document.getElementById("planbar");
+  if(S.plans.length > 1){
+    bar.innerHTML = `<select onchange="setActivePlan(this.value)" aria-label="Trainingsplan wählen">` +
+      S.plans.map(p=>`<option value="${p.id}"${p.id===plan.id?" selected":""}>${esc(p.name)}</option>`).join("") +
+      `</select>`;
+  } else bar.innerHTML = "";
+}
+
+function renderNav(plan){
+  let html = plan.days.map(d=>
+    `<button class="${view.type==='day'&&view.dayId===d.id?'active':''}" onclick="switchDay('${d.id}')">${esc(d.tab)}</button>`
+  ).join("");
+  html += `<button class="${view.type==='progress'?'active':''}" onclick="switchView('progress')">📈 Fortschritt</button>`;
+  html += `<button class="${view.type==='settings'?'active':''}" onclick="switchView('settings')" aria-label="Einstellungen">⚙️</button>`;
+  tabsEl.innerHTML = html;
+}
+
+function schemeText(e){
+  const parts = [];
+  if(e.sets && e.sets>0) parts.push(e.sets + " × " + e.reps);
+  else parts.push(e.reps);
+  return parts.join(" ");
+}
+
+function renderDay(plan){
+  const day = findDay(view.dayId);
+  if(!day){
+    contentEl.innerHTML = `<div class="empty">Dieser Plan hat noch keine Trainingstage.<br>Füge unter ⚙️ einen Tag hinzu.</div>`;
+    return;
+  }
+  const total = day.ex.length;
+  const done = day.ex.filter(e=>S.checks[e.id]).length;
+  let html = `<div class="day-head">
+    <div>
+      <h2>${esc(day.title)}</h2>
+      <p>${esc(day.desc)}</p>
+      ${total?`<span class="pill${done===total?' full':''}">${done} / ${total} erledigt</span>`:""}
+    </div>
+    <button class="editmode-btn${editMode?' on':''}" onclick="toggleEditMode()">${editMode?"✓ Fertig":"✎ Bearbeiten"}</button>
+  </div>`;
+
+  day.ex.forEach((e,i)=>{
+    const isDone = !!S.checks[e.id];
+    const actions = editMode
+      ? `<div class="actions edit">
+           <button class="icon-btn" aria-label="Bearbeiten" onclick="openExModal('${day.id}','${e.id}')">✎</button>
+           <button class="icon-btn" aria-label="Nach oben" onclick="moveEx('${day.id}','${e.id}',-1)" ${i===0?"disabled":""}>↑</button>
+           <button class="icon-btn" aria-label="Nach unten" onclick="moveEx('${day.id}','${e.id}',1)" ${i===day.ex.length-1?"disabled":""}>↓</button>
+           <button class="icon-btn danger" aria-label="Löschen" onclick="delEx('${day.id}','${e.id}')">🗑</button>
+         </div>`
+      : `<div class="actions">
+           <a class="vid" target="_blank" rel="noopener" href="${yt(e.q || e.n)}">
+             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Video
+           </a>
+           <button class="check" aria-label="${esc(e.n)} abhaken" onclick="toggle('${day.id}','${e.id}')">✓</button>
+         </div>`;
+    html += `
+    <div class="ex${isDone&&!editMode?" done":""}">
+      <button class="plate${e.cardio?" cardio":""}" aria-label="Gewicht ändern" onclick="openWeightModal('${day.id}','${e.id}')"><span>${esc(e.w)}</span></button>
+      <div class="info">
+        <h3>${esc(e.n)}</h3>
+        <div class="scheme">${esc(schemeText(e))}</div>
+        ${e.h?`<div class="hint">${esc(e.h)}</div>`:""}
+      </div>
+      ${actions}
+    </div>`;
+  });
+
+  if(editMode){
+    html += `<button class="add-btn" onclick="openExModal('${day.id}',null)">+ Übung hinzufügen</button>`;
+  }
+  if(day.note && !editMode) html += `<div class="note">${day.note}</div>`;
+  html += `<button class="reset" onclick="resetDay('${day.id}')">Haken für diesen Tag zurücksetzen</button>`;
+  contentEl.innerHTML = html;
+}
+
+/* ---------- Fortschritt ---------- */
+function chartSVG(pts){
+  const W=320,H=80,P=12;
+  const ns = pts.map(p=>p.n);
+  let min=Math.min(...ns), max=Math.max(...ns);
+  if(min===max){ min-=1; max+=1; }
+  const x=i=>P+(W-2*P)*(pts.length===1?0.5:i/(pts.length-1));
+  const y=v=>H-P-(H-2*P)*((v-min)/(max-min));
+  const line = pts.map((p,i)=>x(i).toFixed(1)+","+y(p.n).toFixed(1)).join(" ");
+  const dots = pts.map((p,i)=>`<circle cx="${x(i).toFixed(1)}" cy="${y(p.n).toFixed(1)}" r="3.4" fill="#1E5B3F"/>`).join("");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="${line}" fill="none" stroke="#1E5B3F" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>${dots}
+  </svg>
+  <div class="chart-dates"><span>${fmtDate(pts[0].d)}</span><span>${fmtDate(pts[pts.length-1].d)}</span></div>`;
+}
+
+function renderProgress(plan){
+  let rows = "";
+  let totalDelta = 0, improved = 0, tracked = 0;
+  plan.days.forEach(day=>{
+    let dayRows = "";
+    day.ex.forEach(e=>{
+      const pts = (e.hist||[]).filter(h=>h.n!==null && h.n!==undefined);
+      if(pts.length < 2) return;
+      tracked++;
+      const first = pts[0], last = pts[pts.length-1];
+      const delta = last.n - first.n;
+      totalDelta += delta;
+      if(delta > 0) improved++;
+      const cls = delta>0?"up":(delta<0?"dn":"eq");
+      const sign = delta>0?"+":"";
+      dayRows += `<div class="prog">
+        <div class="top"><h4>${esc(e.n)}</h4><span class="delta ${cls}">${sign}${fmtNum(delta)} kg</span></div>
+        <div class="range">Start ${fmtNum(first.n)} kg (${fmtDate(first.d)}) → Aktuell ${fmtNum(last.n)} kg (${fmtDate(last.d)})</div>
+        ${chartSVG(pts)}
       </div>`;
     });
-    if(day.id==="mo") html += `<div class="note"><strong>Progression:</strong> Schaffst du das obere Ende der Wiederholungen in allen Sätzen sauber, erhöhe das Gewicht um die kleinste Stufe.</div>`;
-    if(day.id==="mi") html += `<div class="note"><strong>Schritte-Tipp:</strong> 30 min Incline Walk ≈ 3.500 Schritte. Der Rest kommt aus dem Alltag — 10k sind ein Tagesdurchschnitt, kein Laufband-Pflichtprogramm.</div>`;
-    if(day.id==="fr") html += `<div class="note"><strong>Wochenende:</strong> 2 Tage Pause. Ein langer Spaziergang am Samstag oder Sonntag hält den Schritteschnitt oben.</div>`;
-    html += `<button class="reset" onclick="resetDay('${day.id}')">Haken für diesen Tag zurücksetzen</button>`;
-    sec.innerHTML = html;
-    content.appendChild(sec);
+    if(dayRows) rows += `<div class="prog-day">${esc(day.title)}</div>` + dayRows;
   });
+
+  let html = "";
+  if(tracked){
+    const sign = totalDelta>0?"+":"";
+    html += `<div class="summary">
+      <div class="big">${sign}${fmtNum(totalDelta)} kg</div>
+      <div class="lbl">Gesamtsteigerung seit Beginn · ${improved} von ${tracked} Übungen verbessert</div>
+    </div>` + rows;
+  } else {
+    html = `<div class="empty">📈<br><br>Noch kein Verlauf vorhanden.<br>
+    Tippe bei einer Übung auf das <strong>Gewichts-Badge</strong> (der runde Kreis) und erhöhe dein Gewicht — ab der zweiten Änderung erscheint hier deine Fortschrittskurve.</div>`;
+  }
+  contentEl.innerHTML = html;
 }
 
-function toggle(key){
-  checks[key] = !checks[key];
-  if(!checks[key]) delete checks[key];
-  saveChecks();
+/* ---------- Einstellungen ---------- */
+function renderSettings(plan){
+  let html = `<div class="set-sec"><h3>Trainingspläne</h3>`;
+  S.plans.forEach(p=>{
+    html += `<div class="row">
+      <div class="grow">${esc(p.name)}</div>
+      ${p.id===S.activePlanId?`<span class="tag">aktiv</span>`:`<button class="icon-btn" aria-label="Aktivieren" onclick="setActivePlan('${p.id}')">▶</button>`}
+      <button class="icon-btn" aria-label="Umbenennen" onclick="openNameModal('${p.id}')">✎</button>
+      <button class="icon-btn" aria-label="Duplizieren" onclick="dupPlan('${p.id}')">⧉</button>
+      <button class="icon-btn danger" aria-label="Löschen" onclick="delPlan('${p.id}')" ${S.plans.length<2?"disabled":""}>🗑</button>
+    </div>`;
+  });
+  html += `<button class="btn ghost" onclick="openNameModal(null)">+ Neuer Plan</button>
+  <button class="btn ghost" onclick="restoreTemplate()">Standardplan wiederherstellen</button></div>`;
+
+  html += `<div class="set-sec"><h3>Tage in „${esc(plan.name)}"</h3>`;
+  plan.days.forEach((d,i)=>{
+    html += `<div class="row">
+      <div class="grow">${esc(d.tab)} — ${esc(d.title)}</div>
+      <button class="icon-btn" aria-label="Bearbeiten" onclick="openDayModal('${d.id}')">✎</button>
+      <button class="icon-btn" aria-label="Nach oben" onclick="moveDay('${d.id}',-1)" ${i===0?"disabled":""}>↑</button>
+      <button class="icon-btn" aria-label="Nach unten" onclick="moveDay('${d.id}',1)" ${i===plan.days.length-1?"disabled":""}>↓</button>
+      <button class="icon-btn danger" aria-label="Löschen" onclick="delDay('${d.id}')">🗑</button>
+    </div>`;
+  });
+  html += `<button class="btn ghost" onclick="openDayModal(null)">+ Neuer Tag</button></div>`;
+
+  html += `<div class="set-sec"><h3>Daten</h3>
+    <button class="btn ghost" onclick="exportData()">⬇ Backup exportieren (JSON)</button>
+    <button class="btn ghost" onclick="document.getElementById('import-file').click()">⬆ Backup importieren</button>
+    <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importData(this.files[0]);this.value=''">
+    <button class="btn warn" onclick="resetAllChecks()">Alle Haken zurücksetzen</button>
+    <div class="m-note">Deine Daten liegen nur lokal auf diesem Gerät (localStorage). Exportiere gelegentlich ein Backup — z. B. bevor du Browserdaten löschst oder das Handy wechselst.</div>
+  </div>`;
+  contentEl.innerHTML = html;
+}
+
+/* ---------- Navigation ---------- */
+function switchDay(id){ view={type:"day",dayId:id}; editMode=false; render(); window.scrollTo({top:0}); }
+function switchView(t){ view={type:t,dayId:view.dayId}; render(); window.scrollTo({top:0}); }
+function toggleEditMode(){ editMode=!editMode; render(); }
+function setActivePlan(id){
+  S.activePlanId=id;
+  const p=activePlan();
+  view={type:view.type==="day"?"day":view.type, dayId:p.days[0]?p.days[0].id:null};
+  save(); render();
+}
+
+/* ---------- Abhaken + Konfetti ---------- */
+function toggle(dayId, exId){
+  const wasChecked = !!S.checks[exId];
+  if(wasChecked) delete S.checks[exId]; else S.checks[exId]=true;
+  save();
+  const day = findDay(dayId);
+  const complete = !wasChecked && day.ex.length>0 && day.ex.every(e=>S.checks[e.id]);
   render();
+  if(complete){ confetti(); toast("Stark! Alles erledigt 💪"); }
 }
 function resetDay(dayId){
-  Object.keys(checks).forEach(k=>{ if(k.startsWith(dayId+"-")) delete checks[k]; });
-  saveChecks();
-  render();
+  const day=findDay(dayId);
+  if(day) day.ex.forEach(e=>{ delete S.checks[e.id]; });
+  save(); render();
+}
+function resetAllChecks(){
+  if(!confirm("Wirklich alle Haken in allen Plänen zurücksetzen?")) return;
+  S.checks={}; save(); render();
 }
 
-loadChecks();
+/* ---------- Übungen ---------- */
+function moveEx(dayId, exId, dir){
+  const day=findDay(dayId);
+  const i=day.ex.findIndex(e=>e.id===exId);
+  const j=i+dir;
+  if(j<0||j>=day.ex.length) return;
+  [day.ex[i],day.ex[j]]=[day.ex[j],day.ex[i]];
+  save(); render();
+}
+function delEx(dayId, exId){
+  const ex=findEx(dayId,exId);
+  if(!confirm(`„${ex.n}" wirklich löschen?`)) return;
+  const day=findDay(dayId);
+  day.ex=day.ex.filter(e=>e.id!==exId);
+  delete S.checks[exId];
+  save(); render();
+}
+
+/* ---------- Modals ---------- */
+const modalRoot = document.getElementById("modal-root");
+function closeModal(){ modalRoot.innerHTML=""; }
+function openModal(inner){
+  modalRoot.innerHTML = `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="modal">${inner}</div></div>`;
+}
+
+/* Übung anlegen/bearbeiten */
+function openExModal(dayId, exId){
+  const ex = exId ? findEx(dayId,exId) : null;
+  openModal(`
+    <h3>${ex?"Übung bearbeiten":"Neue Übung"}</h3>
+    <label>Name der Übung</label>
+    <input type="text" id="f-name" value="${ex?esc(ex.n):""}" placeholder="z. B. Kniebeugen Multipresse">
+    <label>Sätze</label>
+    <input type="number" id="f-sets" min="0" max="20" value="${ex?ex.sets:3}">
+    <label>Wiederholungen / Dauer</label>
+    <input type="text" id="f-reps" value="${ex?esc(ex.reps):""}" placeholder="z. B. 8–10 oder 30 s">
+    <label>Gewicht (kg oder Text)</label>
+    <input type="text" id="f-w" value="${ex?esc(ex.w):""}" placeholder="z. B. 60 oder KH">
+    <label>Hinweis zur Ausführung (optional)</label>
+    <textarea id="f-hint" placeholder="z. B. Rücken gerade halten">${ex?esc(ex.h):""}</textarea>
+    <div class="chkline"><input type="checkbox" id="f-cardio" ${ex&&ex.cardio?"checked":""}><label for="f-cardio" style="margin:0">Cardio-Übung (grünes Badge)</label></div>
+    <div class="m-note">🎬 Der YouTube-Video-Link wird automatisch aus dem Übungsnamen erzeugt.</div>
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="saveEx('${dayId}',${exId?`'${exId}'`:"null"})">Speichern</button>
+    </div>`);
+}
+function saveEx(dayId, exId){
+  const name = document.getElementById("f-name").value.trim();
+  if(!name){ alert("Bitte einen Übungsnamen eingeben."); return; }
+  const sets = parseInt(document.getElementById("f-sets").value,10) || 0;
+  const reps = document.getElementById("f-reps").value.trim() || "—";
+  const w = document.getElementById("f-w").value.trim() || "—";
+  const h = document.getElementById("f-hint").value.trim();
+  const cardio = document.getElementById("f-cardio").checked;
+  const day = findDay(dayId);
+  if(exId){
+    const ex = findEx(dayId,exId);
+    // YouTube-Suche folgt dem Namen, außer es gab eine speziellere Suchanfrage
+    if(!ex.q || ex.q === ex.n) ex.q = name;
+    ex.n = name; ex.sets = sets; ex.reps = reps; ex.h = h; ex.cardio = cardio;
+    recordWeight(ex, w);
+  } else {
+    const n = parseW(w);
+    day.ex.push({ id:uid(), n:name, sets, reps, w, q:name, h, cardio,
+                  hist: n!==null ? [{d:todayISO(), w, n}] : [] });
+  }
+  save(); closeModal(); render();
+}
+
+/* Gewicht schnell ändern */
+function openWeightModal(dayId, exId){
+  const ex = findEx(dayId,exId);
+  const pts = (ex.hist||[]).filter(h=>h.n!==null&&h.n!==undefined);
+  const histLine = pts.length
+    ? "Verlauf: " + pts.slice(-6).map(p=>fmtNum(p.n)).join(" → ") + " kg"
+    : "Noch kein Verlauf aufgezeichnet.";
+  openModal(`
+    <h3>${esc(ex.n)}</h3>
+    <label>Gewicht</label>
+    <input type="text" id="f-weight" value="${esc(ex.w)}" inputmode="decimal">
+    <div class="steppers">
+      <button onclick="stepWeight(-5)">−5</button>
+      <button onclick="stepWeight(-2.5)">−2,5</button>
+      <button onclick="stepWeight(2.5)">+2,5</button>
+      <button onclick="stepWeight(5)">+5</button>
+    </div>
+    <div class="hist-preview">${esc(histLine)}<br>Jede Änderung wird mit Datum gespeichert und erscheint unter 📈 Fortschritt.</div>
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="saveWeight('${dayId}','${exId}')">Speichern</button>
+    </div>`);
+}
+function stepWeight(d){
+  const inp = document.getElementById("f-weight");
+  const n = parseW(inp.value);
+  if(n===null){ inp.value = fmtNum(Math.max(0,d)); return; }
+  inp.value = fmtNum(Math.max(0, n+d));
+}
+function saveWeight(dayId, exId){
+  const ex = findEx(dayId,exId);
+  const w = document.getElementById("f-weight").value.trim() || "—";
+  recordWeight(ex, w);
+  save(); closeModal(); render();
+}
+
+/* Tag anlegen/bearbeiten */
+function openDayModal(dayId){
+  const day = dayId ? findDay(dayId) : null;
+  openModal(`
+    <h3>${day?"Tag bearbeiten":"Neuer Tag"}</h3>
+    <label>Kurzname für die Leiste oben</label>
+    <input type="text" id="f-tab" value="${day?esc(day.tab):""}" placeholder="z. B. Sa · Push">
+    <label>Titel</label>
+    <input type="text" id="f-title" value="${day?esc(day.title):""}" placeholder="z. B. Samstag — Push-Tag">
+    <label>Beschreibung (optional)</label>
+    <textarea id="f-desc">${day?esc(day.desc):""}</textarea>
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="saveDay(${dayId?`'${dayId}'`:"null"})">Speichern</button>
+    </div>`);
+}
+function saveDay(dayId){
+  const tab = document.getElementById("f-tab").value.trim();
+  const title = document.getElementById("f-title").value.trim();
+  const desc = document.getElementById("f-desc").value.trim();
+  if(!tab || !title){ alert("Bitte Kurzname und Titel eingeben."); return; }
+  const plan = activePlan();
+  if(dayId){
+    const day = findDay(dayId);
+    day.tab = tab; day.title = title; day.desc = desc;
+  } else {
+    const day = { id:uid(), tab, title, desc, note:"", ex:[] };
+    plan.days.push(day);
+    view = { type:"day", dayId: day.id };
+  }
+  save(); closeModal(); render();
+}
+function moveDay(dayId, dir){
+  const days = activePlan().days;
+  const i = days.findIndex(d=>d.id===dayId);
+  const j = i+dir;
+  if(j<0||j>=days.length) return;
+  [days[i],days[j]]=[days[j],days[i]];
+  save(); render();
+}
+function delDay(dayId){
+  const day = findDay(dayId);
+  if(!confirm(`Tag „${day.title}" mit ${day.ex.length} Übungen wirklich löschen?`)) return;
+  const plan = activePlan();
+  day.ex.forEach(e=>{ delete S.checks[e.id]; });
+  plan.days = plan.days.filter(d=>d.id!==dayId);
+  if(view.dayId===dayId) view.dayId = plan.days[0] ? plan.days[0].id : null;
+  save(); render();
+}
+
+/* Pläne */
+function openNameModal(planId){
+  const plan = planId ? S.plans.find(p=>p.id===planId) : null;
+  openModal(`
+    <h3>${plan?"Plan umbenennen":"Neuer Trainingsplan"}</h3>
+    <label>Name</label>
+    <input type="text" id="f-plan-name" value="${plan?esc(plan.name):""}" placeholder="z. B. Push/Pull/Legs">
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Abbrechen</button>
+      <button class="btn" onclick="savePlanName(${planId?`'${planId}'`:"null"})">Speichern</button>
+    </div>`);
+}
+function savePlanName(planId){
+  const name = document.getElementById("f-plan-name").value.trim();
+  if(!name){ alert("Bitte einen Namen eingeben."); return; }
+  if(planId){
+    S.plans.find(p=>p.id===planId).name = name;
+  } else {
+    const p = { id:uid(), name, days:[] };
+    S.plans.push(p);
+    S.activePlanId = p.id;
+    view = { type:"settings", dayId:null };
+  }
+  save(); closeModal(); render();
+}
+function dupPlan(planId){
+  const src = S.plans.find(p=>p.id===planId);
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.id = uid();
+  copy.name = src.name + " (Kopie)";
+  copy.days.forEach(d=>{ d.id = uid(); d.ex.forEach(e=>{ e.id = uid(); }); });
+  S.plans.push(copy);
+  save(); render();
+}
+function delPlan(planId){
+  if(S.plans.length<2) return;
+  const p = S.plans.find(x=>x.id===planId);
+  if(!confirm(`Plan „${p.name}" wirklich löschen? Der Gewichtsverlauf dieses Plans geht verloren.`)) return;
+  S.plans = S.plans.filter(x=>x.id!==planId);
+  if(S.activePlanId===planId){
+    S.activePlanId = S.plans[0].id;
+    view = { type:"settings", dayId:null };
+  }
+  save(); render();
+}
+function restoreTemplate(){
+  const p = seedPlan();
+  p.id = uid();
+  p.name = "Ober-/Unterkörper-Split (Standard)";
+  p.days.forEach(d=>{ d.id = uid()+d.id; d.ex.forEach(e=>{ e.id = uid(); }); });
+  S.plans.push(p);
+  save(); render();
+  toast("Standardplan hinzugefügt");
+}
+
+/* ---------- Export / Import ---------- */
+function exportData(){
+  const blob = new Blob([JSON.stringify(S,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "trainingsplan-backup-"+todayISO()+".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importData(file){
+  if(!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try{
+      const data = JSON.parse(r.result);
+      if(!data || !Array.isArray(data.plans) || !data.plans.length) throw new Error("bad");
+      if(!confirm("Backup importieren? Deine aktuellen Daten werden ersetzt.")) return;
+      S = data;
+      if(!S.checks) S.checks = {};
+      if(!S.plans.find(p=>p.id===S.activePlanId)) S.activePlanId = S.plans[0].id;
+      view = { type:"day", dayId:null };
+      save(); render();
+      toast("Backup importiert ✓");
+    }catch(e){ alert("Diese Datei ist kein gültiges Trainingsplan-Backup."); }
+  };
+  r.readAsText(file);
+}
+
+/* ---------- Konfetti & Toast ---------- */
+function confetti(){
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.createElement("canvas");
+  c.className = "confetti";
+  const dpr = window.devicePixelRatio || 1;
+  c.width = innerWidth*dpr; c.height = innerHeight*dpr;
+  document.body.appendChild(c);
+  const ctx = c.getContext("2d");
+  ctx.scale(dpr,dpr);
+  const cols = ["#1E5B3F","#4C8C6A","#8FA89A","#F2C14E","#FFFFFF","#17211B"];
+  const P = [];
+  for(let i=0;i<140;i++){
+    P.push({
+      x: Math.random()*innerWidth,
+      y: -20 - Math.random()*innerHeight*0.6,
+      w: 6+Math.random()*6, h: 8+Math.random()*8,
+      c: cols[i%cols.length],
+      v: 2.2+Math.random()*3.4,
+      r: Math.random()*Math.PI, vr:(Math.random()-.5)*0.25,
+      sway: Math.random()*Math.PI*2
+    });
+  }
+  const t0 = performance.now();
+  (function frame(t){
+    const el = (t-t0)/1000;
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    P.forEach(p=>{
+      p.y += p.v; p.x += Math.sin(el*3+p.sway)*1.2; p.r += p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(el<3.4) requestAnimationFrame(frame); else c.remove();
+  })(t0);
+}
+function toast(msg){
+  const t = document.createElement("div");
+  t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2400);
+}
+
+/* ---------- Start ---------- */
+load();
+render();
 
 // Service Worker registrieren – nötig für Offline-Nutzung & Installierbarkeit.
 if("serviceWorker" in navigator){

@@ -1,5 +1,5 @@
 // Service Worker für den Trainingsplan – ermöglicht Offline-Nutzung.
-const CACHE = "trainingsplan-v1";
+const CACHE = "trainingsplan-v2";
 
 // App-Shell: lokale Dateien, die für den Offline-Betrieb vorab gecacht werden.
 const ASSETS = [
