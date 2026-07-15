@@ -1,5 +1,5 @@
 // Service Worker für den Trainingsplan – ermöglicht Offline-Nutzung.
-const CACHE = "trainingsplan-v7";
+const CACHE = "trainingsplan-v8";
 
 // App-Shell: lokale Dateien, die für den Offline-Betrieb vorab gecacht werden.
 const ASSETS = [
@@ -30,35 +30,6 @@ self.addEventListener("activate", event => {
         keys.filter(k => k !== CACHE).map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
-  );
-});
-
-// Push-Benachrichtigung (Trainings-Erinnerung) anzeigen.
-self.addEventListener("push", event => {
-  let data = {};
-  try { data = event.data.json(); } catch (e) {}
-  event.waitUntil(
-    self.registration.showNotification(data.title || "🏋️ Training heute", {
-      body: data.body || "Zeit fürs Training!",
-      icon: "./icon-192.png",
-      badge: "./icon-192.png",
-      tag: "trainings-erinnerung",
-      renotify: false,
-      data: { url: "./trainingsplan.html" }
-    })
-  );
-});
-
-// Tipp auf die Benachrichtigung öffnet (oder fokussiert) die App.
-self.addEventListener("notificationclick", event => {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
-      for (const c of list) {
-        if ("focus" in c) return c.focus();
-      }
-      return clients.openWindow("./trainingsplan.html");
-    })
   );
 });
 
