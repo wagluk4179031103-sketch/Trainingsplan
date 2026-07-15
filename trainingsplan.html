@@ -133,6 +133,7 @@
   .plate.cardio{
     background:radial-gradient(circle at 50% 50%, var(--paper) 0 26%, var(--pine) 27% 100%);
     border-color:var(--pine);
+    cursor:default;
   }
   .plate.cardio span{background:var(--pine)}
   .info h3{font-size:15px;font-weight:600;line-height:1.25}
@@ -354,15 +355,14 @@ function seedPlan(){
   const E = (id,n,sets,reps,w,q,h,cardio) => {
     const num = parseW(w);
     return { id, n, sets, reps, w, q, h, cardio: !!cardio,
-             hist: num !== null ? [{d:t, w, n:num}] : [] };
+             hist: (!cardio && num !== null) ? [{d:t, w, n:num}] : [] };
   };
   return {
     id: "p1",
     name: "Ober-/Unterkörper-Split",
     days: [
       { id:"mo", tab:"Mo · OK A", title:"Montag früh — Oberkörper A",
-        desc:"Drücken + Ziehen im Gleichgewicht. Pausen 90–120 s bei den ersten beiden, sonst 60–90 s.",
-        note:"<strong>Progression:</strong> Schaffst du das obere Ende der Wiederholungen in allen Sätzen sauber, erhöhe das Gewicht um die kleinste Stufe.",
+        desc:"", note:"",
         ex:[
           E("mo-0","Brustpresse Maschine",4,"8–10","60–65","Brustpresse Maschine","Schulterblätter zurück, nicht ganz aussperren."),
           E("mo-1","Latzug zur Brust",4,"8–10","60","Latzug breiter Griff","Zur oberen Brust ziehen, Ellbogen nach unten."),
@@ -372,8 +372,7 @@ function seedPlan(){
           E("mo-5","Trizeps Pushdown",3,"12","25","Trizepsdrücken Kabelzug","Ellbogen bleiben am Körper fixiert.")
         ]},
       { id:"di", tab:"Di · UK A", title:"Dienstag — Unterkörper A",
-        desc:"Schwerer Beintag. Beinpresse zuerst, solange du frisch bist.",
-        note:"",
+        desc:"", note:"",
         ex:[
           E("di-0","Beinpresse",4,"8–10","110","Beinpresse","Tief runter, Knie in Richtung Zehenspitzen."),
           E("di-1","Beinbeuger sitzend",3,"10–12","45","Beinbeuger sitzend Maschine","Oben kontrolliert, unten kurz halten."),
@@ -382,16 +381,14 @@ function seedPlan(){
           E("di-4","Seated Crunch",3,"15","35","Crunch Maschine","Bauch bewusst einrollen, nicht mit Armen ziehen.")
         ]},
       { id:"mi", tab:"Mi · Cardio", title:"Mittwoch — Cardio + Core (optional)",
-        desc:"Dein wichtigster Tag für den Fettverlust. Locker genug, dass du dich dabei unterhalten könntest (Zone 2).",
-        note:"<strong>Schritte-Tipp:</strong> 30 min Incline Walk ≈ 3.500 Schritte. Der Rest kommt aus dem Alltag — 10k sind ein Tagesdurchschnitt, kein Laufband-Pflichtprogramm.",
+        desc:"", note:"",
         ex:[
           E("mi-0","Laufband: Incline Walk",0,"30–40 min","Z2","Incline Walking Laufband Fettverbrennung","Steigung 8–12 %, Tempo 5–6 km/h, nicht festhalten.",true),
           E("mi-1","Plank",3,"30–60 s","—","Plank Unterarmstütz richtig","Gesäß anspannen, Körper eine Linie.",true),
           E("mi-2","Cable Crunch kniend",3,"15","—","Cable Crunch kniend Kabelzug","Hüfte bleibt fix, nur Oberkörper einrollen.",true)
         ]},
       { id:"do", tab:"Do · OK B", title:"Donnerstag (früh oder abends) — Oberkörper B",
-        desc:"Andere Winkel als Montag. Face Pulls sind dein Ausgleich zum vielen Drücken.",
-        note:"",
+        desc:"", note:"",
         ex:[
           E("do-0","Schrägbankdrücken Kurzhanteln",4,"8–10","18→20","Schrägbankdrücken Kurzhanteln","Bank 30°, Hanteln über der oberen Brust."),
           E("do-1","Enges Kabelrudern",4,"10","—","Kabelrudern enger Griff sitzend","Aufrecht bleiben, zum Bauchnabel ziehen."),
@@ -401,8 +398,7 @@ function seedPlan(){
           E("do-5","Überkopf-Trizeps-Extensions",3,"12","—","Trizeps Überkopf Kabelzug","Ellbogen eng, voll strecken.")
         ]},
       { id:"fr", tab:"Fr · UK B", title:"Freitag früh — Unterkörper B",
-        desc:"Fokus hintere Kette: RDLs sind neu und die wichtigste Ergänzung im Plan.",
-        note:"<strong>Wochenende:</strong> 2 Tage Pause. Ein langer Spaziergang am Samstag oder Sonntag hält den Schritteschnitt oben.",
+        desc:"", note:"",
         ex:[
           E("fr-0","Rumänisches Kreuzheben (KH)",4,"10","KH","Rumänisches Kreuzheben Kurzhanteln","Hüfte nach hinten, Rücken gerade, Dehnung im Beinbeuger."),
           E("fr-1","Beinstrecker",3,"12","45","Beinstrecker Maschine","Oben kurz halten, langsam ablassen."),
@@ -566,10 +562,35 @@ function activePlan(){
 function findDay(dayId){ return activePlan().days.find(d=>d.id===dayId); }
 function findEx(dayId, exId){ const d=findDay(dayId); return d ? d.ex.find(e=>e.id===exId) : null; }
 
+/* Alte Coaching-Texte aus bestehenden Daten entfernen (einmalige Bereinigung) */
+const LEGACY_TEXTS = [
+  "Drücken + Ziehen im Gleichgewicht. Pausen 90–120 s bei den ersten beiden, sonst 60–90 s.",
+  "Schwerer Beintag. Beinpresse zuerst, solange du frisch bist.",
+  "Dein wichtigster Tag für den Fettverlust. Locker genug, dass du dich dabei unterhalten könntest (Zone 2).",
+  "Andere Winkel als Montag. Face Pulls sind dein Ausgleich zum vielen Drücken.",
+  "Fokus hintere Kette: RDLs sind neu und die wichtigste Ergänzung im Plan.",
+  "<strong>Progression:</strong> Schaffst du das obere Ende der Wiederholungen in allen Sätzen sauber, erhöhe das Gewicht um die kleinste Stufe.",
+  "<strong>Schritte-Tipp:</strong> 30 min Incline Walk ≈ 3.500 Schritte. Der Rest kommt aus dem Alltag — 10k sind ein Tagesdurchschnitt, kein Laufband-Pflichtprogramm.",
+  "<strong>Wochenende:</strong> 2 Tage Pause. Ein langer Spaziergang am Samstag oder Sonntag hält den Schritteschnitt oben."
+];
+function sanitizeU(){
+  if(!U || !Array.isArray(U.plans)) return false;
+  let changed = false;
+  U.plans.forEach(p=>p.days.forEach(d=>{
+    if(d.desc && LEGACY_TEXTS.indexOf(d.desc) >= 0){ d.desc = ""; changed = true; }
+    if(d.note && LEGACY_TEXTS.indexOf(d.note) >= 0){ d.note = ""; changed = true; }
+    d.ex.forEach(e=>{
+      if(e.cardio && e.hist && e.hist.length){ e.hist = []; changed = true; }
+    });
+  }));
+  return changed;
+}
+
 /* Gewichtsänderung protokollieren — Startwert bleibt als Basis erhalten */
 function recordWeight(ex, newRaw){
   if(String(newRaw) === String(ex.w)) return;
   ex.w = newRaw;
+  if(ex.cardio) return; // Cardio hat keinen Gewichtsverlauf
   const n = parseW(newRaw);
   if(!Array.isArray(ex.hist)) ex.hist = [];
   const last = ex.hist[ex.hist.length-1];
@@ -587,6 +608,7 @@ function render(){
   if(view.type === "welcome"){ renderBareHeader(); renderWelcome(); return; }
   if(view.type === "users"){ renderBareHeader(); renderUsersView(); return; }
   if(!U){ view = {type: device.token ? "users" : "welcome"}; render(); return; }
+  if(sanitizeU()) save();
   const plan = activePlan();
   if(view.type === "day" && (!view.dayId || !findDay(view.dayId))){
     view.dayId = plan.days[0] ? plan.days[0].id : null;
@@ -852,7 +874,7 @@ function renderDay(plan){
   let html = `<div class="day-head">
     <div>
       <h2>${esc(day.title)}</h2>
-      <p>${esc(day.desc)}</p>
+      ${day.desc?`<p>${esc(day.desc)}</p>`:""}
       ${total?`<span class="pill${done===total?' full':''}">${done} / ${total} erledigt</span>`:""}
     </div>
     <button class="editmode-btn${editMode?' on':''}" onclick="toggleEditMode()">${editMode?"✓ Fertig":"✎ Bearbeiten"}</button>
@@ -873,9 +895,12 @@ function renderDay(plan){
            </a>
            <button class="check" aria-label="${esc(e.n)} abhaken" onclick="toggle('${day.id}','${e.id}')">✓</button>
          </div>`;
+    const plate = e.cardio
+      ? `<div class="plate cardio"><span>${esc(e.w)}</span></div>`
+      : `<button class="plate" aria-label="Gewicht ändern" onclick="openWeightModal('${day.id}','${e.id}')"><span>${esc(e.w)}</span></button>`;
     html += `
     <div class="ex${isDone&&!editMode?" done":""}">
-      <button class="plate${e.cardio?" cardio":""}" aria-label="Gewicht ändern" onclick="openWeightModal('${day.id}','${e.id}')"><span>${esc(e.w)}</span></button>
+      ${plate}
       <div class="info">
         <h3>${esc(e.n)}</h3>
         <div class="scheme">${esc(schemeText(e))}</div>
@@ -914,6 +939,7 @@ function renderProgress(plan){
   plan.days.forEach(day=>{
     let dayRows = "";
     day.ex.forEach(e=>{
+      if(e.cardio) return; // Cardio hat keinen Gewichtsverlauf
       const pts = (e.hist||[]).filter(h=>h.n!==null && h.n!==undefined);
       if(pts.length < 2) return;
       tracked++;
@@ -1109,6 +1135,7 @@ function saveEx(dayId, exId){
 /* Gewicht schnell ändern */
 function openWeightModal(dayId, exId){
   const ex = findEx(dayId,exId);
+  if(!ex || ex.cardio) return; // Cardio hat kein Gewicht
   const pts = (ex.hist||[]).filter(h=>h.n!==null&&h.n!==undefined);
   const histLine = pts.length
     ? "Verlauf: " + pts.slice(-6).map(p=>fmtNum(p.n)).join(" → ") + " kg"
