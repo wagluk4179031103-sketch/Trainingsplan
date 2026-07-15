@@ -322,6 +322,7 @@
 
 <script>
 /* ================= Helfer ================= */
+const APP_VERSION = "6 · 15.07.2026";
 const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " Ausführung Technik");
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1036,6 +1037,11 @@ function renderSettings(plan){
     <input type="file" id="import-file" accept="application/json,.json" style="display:none" onchange="importData(this.files[0]);this.value=''">
     <button class="btn warn" onclick="resetAllChecks()">Alle Haken zurücksetzen</button>
     ${device.token?`<div class="m-note">Mit aktivem Sync sind manuelle Backups nur eine zusätzliche Absicherung — GitHub speichert automatisch jede Änderung.</div>`:""}
+  </div>`;
+
+  html += `<div class="set-sec"><h3>App</h3>
+    <button class="btn ghost" onclick="location.reload()">🔄 Neu laden / Update holen</button>
+    <div class="m-note">Version ${APP_VERSION} — steht hier eine ältere Version als erwartet, App komplett schließen (aus dem App-Wechsler wischen) und mit Internet neu öffnen.</div>
   </div>`;
   contentEl.innerHTML = html;
 }
