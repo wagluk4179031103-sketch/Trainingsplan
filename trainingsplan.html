@@ -292,6 +292,15 @@
     border:none;border-radius:10px;padding:10px 0;cursor:pointer;
   }
   .hist-preview{font-size:12px;color:var(--steel);margin-top:10px;line-height:1.5}
+  /* Pausen-Timer */
+  .timer-chip{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%);
+    background:var(--pine);color:#fff;
+    font-family:'Archivo',sans-serif;font-weight:600;font-size:15px;
+    padding:13px 22px;border-radius:999px;z-index:60;
+    cursor:pointer;white-space:nowrap;
+    box-shadow:0 4px 16px rgba(23,33,27,.25);
+  }
   /* Konfetti + Toast */
   canvas.confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:100}
   .toast{
@@ -322,7 +331,17 @@
 
 <script>
 /* ================= Helfer ================= */
-const APP_VERSION = "6 · 15.07.2026";
+const APP_VERSION = "7 · 15.07.2026";
+/* Öffentlicher VAPID-Schlüssel für Push-Benachrichtigungen (unkritisch, darf öffentlich sein) */
+const VAPID_PUBLIC = "BKbKJ32UfCh2NmHlLy0iYpQtRioGASGLIDSUG_LRvu55_m1xvzqyhpswOYOQSSWz1fwa9BZZHR911Dy8wU7FWWA";
+function urlB64ToUint8Array(s){
+  const pad = "=".repeat((4 - s.length % 4) % 4);
+  const b64 = (s + pad).replace(/-/g,"+").replace(/_/g,"/");
+  const raw = atob(b64);
+  const arr = new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) arr[i] = raw.charCodeAt(i);
+  return arr;
+}
 const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q + " Ausführung Technik");
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -549,6 +568,73 @@ function setSync(state){
     error:    "⚠️ Sync-Fehler — Schlüssel unter ⚙️ prüfen"
   };
   el.textContent = (U ? map[state] : "") || "";
+}
+
+/* ================= Trainings-Erinnerung (Web Push) ================= */
+function getSettings(){
+  if(!U.settings) U.settings = {};
+  return U.settings;
+}
+function pushSupported(){
+  return "Notification" in window && "serviceWorker" in navigator && "PushManager" in window;
+}
+function setTrainTime(v){
+  const s = getSettings();
+  s.trainTime = v || "18:00";
+  save();
+}
+async function enableReminders(){
+  if(!device.token){
+    alert("Bitte zuerst die Synchronisation einrichten (⚙️ → Sync) — die Erinnerung wird über deinen GitHub-Datenspeicher verschickt.");
+    return;
+  }
+  if(!pushSupported()){
+    alert("Dieses Gerät unterstützt hier keine Push-Benachrichtigungen.\n\niPhone: Die App muss zum Home-Bildschirm hinzugefügt und von dort geöffnet werden (iOS 16.4 oder neuer).");
+    return;
+  }
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm !== "granted"){
+      alert("Benachrichtigungen wurden nicht erlaubt. Du kannst das in den Geräte-Einstellungen ändern.");
+      return;
+    }
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC)
+    });
+    const j = sub.toJSON();
+    const s = getSettings();
+    s.push = (s.push || []).filter(p => p.endpoint !== j.endpoint).concat([j]);
+    s.reminders = true;
+    s.tz = (Intl.DateTimeFormat().resolvedOptions().timeZone) || "Europe/Berlin";
+    if(!s.trainTime){
+      const inp = document.getElementById("f-traintime");
+      s.trainTime = (inp && inp.value) || "18:00";
+    }
+    window.__pushEndpoint = j.endpoint;
+    save(); render();
+    toast("Erinnerung aktiviert ✓");
+  }catch(e){
+    alert("Aktivierung fehlgeschlagen: " + (e.message || e));
+  }
+}
+async function disableReminders(){
+  try{
+    const reg = await navigator.serviceWorker.getRegistration();
+    const sub = reg && await reg.pushManager.getSubscription();
+    const s = getSettings();
+    if(sub){
+      s.push = (s.push || []).filter(p => p.endpoint !== sub.endpoint);
+      await sub.unsubscribe();
+    }
+    s.reminders = (s.push || []).length > 0;
+    window.__pushEndpoint = null;
+    save(); render();
+    toast("Erinnerung auf diesem Gerät deaktiviert");
+  }catch(e){
+    alert("Deaktivierung fehlgeschlagen: " + (e.message || e));
+  }
 }
 
 /* ================= Zustand ändern ================= */
@@ -891,7 +977,10 @@ function renderDay(plan){
       ${day.desc?`<p>${esc(day.desc)}</p>`:""}
       ${total?`<span class="pill${done===total?' full':''}">${done} / ${total} erledigt</span>`:""}
     </div>
-    <button class="editmode-btn${editMode?' on':''}" onclick="toggleEditMode()">${editMode?"✓ Fertig":"✎ Bearbeiten"}</button>
+    <div style="display:flex;gap:6px;flex:0 0 auto">
+      <button class="editmode-btn" onclick="openTimerModal()" aria-label="Pausen-Timer">⏱</button>
+      <button class="editmode-btn${editMode?' on':''}" onclick="toggleEditMode()">${editMode?"✓ Fertig":"✎ Bearbeiten"}</button>
+    </div>
   </div>`;
 
   day.ex.forEach((e,i)=>{
@@ -1005,6 +1094,23 @@ function renderSettings(plan){
   </div>`;
 
   html += `<div class="set-sec"><h3>Synchronisation</h3>${syncSec}</div>`;
+
+  const rs = getSettings();
+  const thisDeviceActive = !!(window.__pushEndpoint && (rs.push||[]).some(p=>p.endpoint===window.__pushEndpoint));
+  html += `<div class="set-sec"><h3>⏰ Trainings-Erinnerung</h3>
+    <div class="row">
+      <div class="grow">Trainingsbeginn<span class="sub2">Ab dann kommt dein Tagesplan als Benachrichtigung</span></div>
+      <input type="time" id="f-traintime" class="field" style="width:auto;flex:0 0 auto" value="${esc(rs.trainTime||"18:00")}" onchange="setTrainTime(this.value)">
+    </div>
+    <div class="row">
+      <div class="grow">Dieses Gerät<span class="sub2">${thisDeviceActive?"erhält Benachrichtigungen":"erhält keine Benachrichtigungen"}</span></div>
+      ${thisDeviceActive?'<span class="tag">aktiv</span>':""}
+    </div>
+    ${thisDeviceActive
+      ? `<button class="btn warn" onclick="disableReminders()">Erinnerung auf diesem Gerät ausschalten</button>`
+      : `<button class="btn" onclick="enableReminders()">🔔 Erinnerung auf diesem Gerät aktivieren</button>`}
+    <div class="m-note">Zur Trainingszeit erscheint dein heutiger Plan als Benachrichtigung auf dem Sperrbildschirm (Genauigkeit ca. ±15 Minuten). An Tagen ohne Training kommt nichts. Benötigt aktiven Sync. iPhone: nur als installierte Home-Bildschirm-App (iOS 16.4+).</div>
+  </div>`;
 
   html += `<div class="set-sec"><h3>Trainingspläne</h3>`;
   U.plans.forEach(p=>{
@@ -1321,6 +1427,67 @@ function importData(file){
   r.readAsText(file);
 }
 
+/* ---------- Pausen-Timer ---------- */
+let timerInt = null, timerEnd = 0, timerCtx = null;
+function openTimerModal(){
+  openModal(`
+    <h3>⏱ Pausen-Timer</h3>
+    <div class="steppers" style="margin-top:14px">
+      <button onclick="startTimer(60)">60 s</button>
+      <button onclick="startTimer(90)">90 s</button>
+      <button onclick="startTimer(120)">2 min</button>
+      <button onclick="startTimer(180)">3 min</button>
+    </div>
+    <div class="m-note">Am Ende vibriert das Handy kurz. Tipp auf die laufende Anzeige bricht den Timer ab. Bildschirm ausschalten kann den Ton/die Vibration verzögern — die Zeit selbst bleibt korrekt.</div>
+    <div class="m-actions">
+      <button class="btn ghost" onclick="closeModal()">Schließen</button>
+    </div>`);
+}
+function startTimer(sec){
+  closeModal();
+  stopTimer(false);
+  try{
+    timerCtx = timerCtx || new (window.AudioContext || window.webkitAudioContext)();
+    timerCtx.resume();
+  }catch(e){}
+  timerEnd = Date.now() + sec*1000;
+  const chip = document.createElement("div");
+  chip.className = "timer-chip";
+  chip.id = "timer-chip";
+  chip.onclick = () => stopTimer(false);
+  document.body.appendChild(chip);
+  const tick = () => {
+    const left = Math.max(0, Math.round((timerEnd - Date.now())/1000));
+    chip.textContent = "⏱ " + Math.floor(left/60) + ":" + String(left%60).padStart(2,"0") + " · Pause (Tipp = Abbruch)";
+    if(left <= 0) stopTimer(true);
+  };
+  tick();
+  timerInt = setInterval(tick, 250);
+}
+function stopTimer(finished){
+  clearInterval(timerInt); timerInt = null;
+  const c = document.getElementById("timer-chip");
+  if(c) c.remove();
+  if(finished){
+    if(navigator.vibrate) navigator.vibrate([200,120,200]);
+    beep();
+    toast("Pause vorbei — nächster Satz! 💪");
+  }
+}
+function beep(){
+  try{
+    const ctx = timerCtx;
+    if(!ctx) return;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = 880;
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    o.start(); o.stop(ctx.currentTime + 0.65);
+  }catch(e){}
+}
+
 /* ---------- Konfetti & Toast ---------- */
 function confetti(){
   if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -1379,6 +1546,14 @@ function init(){
   render();
   if(device.token && U) backgroundRefresh();
   window.addEventListener("online", ()=>{ if(dirty && device.token) pushUser(); });
+
+  // Prüfen, ob dieses Gerät bereits für Push-Erinnerungen angemeldet ist
+  if("serviceWorker" in navigator && "PushManager" in window){
+    navigator.serviceWorker.ready
+      .then(r => r.pushManager.getSubscription())
+      .then(sub => { window.__pushEndpoint = sub ? sub.endpoint : null; })
+      .catch(()=>{});
+  }
 
   // Wenn die App an einem neuen Tag wieder geöffnet wird (PWA bleibt oft im
   // Speicher), automatisch zum heutigen Trainingstag springen + Sync anstoßen.
