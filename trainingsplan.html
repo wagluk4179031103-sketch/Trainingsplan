@@ -559,6 +559,19 @@ function save(){
 function activePlan(){
   return U.plans.find(p=>p.id===U.activePlanId) || U.plans[0];
 }
+/* Trainingstag passend zum heutigen Wochentag finden (sonst erster Tag) */
+function autoDayId(plan){
+  if(!plan.days.length) return null;
+  const wd = new Date().getDay();
+  const abbr = ["so","mo","di","mi","do","fr","sa"][wd];
+  const full = ["sonntag","montag","dienstag","mittwoch","donnerstag","freitag","samstag"][wd];
+  const hit = plan.days.find(d =>
+    d.id === abbr ||
+    String(d.tab||"").trim().toLowerCase().startsWith(abbr) ||
+    String(d.title||"").toLowerCase().includes(full)
+  );
+  return (hit || plan.days[0]).id;
+}
 function findDay(dayId){ return activePlan().days.find(d=>d.id===dayId); }
 function findEx(dayId, exId){ const d=findDay(dayId); return d ? d.ex.find(e=>e.id===exId) : null; }
 
@@ -611,7 +624,7 @@ function render(){
   if(sanitizeU()) save();
   const plan = activePlan();
   if(view.type === "day" && (!view.dayId || !findDay(view.dayId))){
-    view.dayId = plan.days[0] ? plan.days[0].id : null;
+    view.dayId = autoDayId(plan);
   }
   renderHeader(plan);
   renderNav(plan);
@@ -1360,6 +1373,21 @@ function init(){
   render();
   if(device.token && U) backgroundRefresh();
   window.addEventListener("online", ()=>{ if(dirty && device.token) pushUser(); });
+
+  // Wenn die App an einem neuen Tag wieder geöffnet wird (PWA bleibt oft im
+  // Speicher), automatisch zum heutigen Trainingstag springen + Sync anstoßen.
+  let lastSeenDate = todayISO();
+  document.addEventListener("visibilitychange", ()=>{
+    if(document.visibilityState !== "visible") return;
+    if(todayISO() !== lastSeenDate){
+      lastSeenDate = todayISO();
+      if(U && view.type === "day"){
+        view.dayId = autoDayId(activePlan());
+        render();
+      }
+    }
+    if(device.token && U) backgroundRefresh();
+  });
 }
 init();
 
